@@ -7,7 +7,7 @@
 
 <div class="bs-example widget-shadow" style="padding:15px" id="listar">
     <!-- Chamando o ajax.js -->
-    <script src="../js/ajax.js"></script>
+    <script src="js/ajax-produtos.js"></script>
 </div>
 
 <!-- Modal Formulário -->
@@ -101,4 +101,3 @@
         $('#mensagem').text('');
     }
 </script>
-<script src="js/ajax-produtos.js"></script>
