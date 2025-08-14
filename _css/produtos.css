@@ -1,0 +1,95 @@
+body {
+  font-family: "Futura Std", "Futura", sans-serif;
+  margin: 0;
+}
+
+.titulo-pagina {
+  text-align: center;
+  font-size: 2.5rem;
+  margin: 50px 0 30px;
+  color: #37222d;
+  font-weight: bold;
+}
+
+.produtos-section {
+  padding: 0 40px 60px;
+  background-color: #fdf9f9;
+}
+.produto-card a {
+    text-decoration: none;
+}
+
+.produtos-grid-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.produtos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 30px;
+  justify-items: center;
+}
+
+.produto-card {
+  width: 100%;
+  max-width: 300px; /* este é o segredo para não esticar demais */
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.produto-card:hover {
+  transform: translateY(-5px);
+}
+
+.produto-card img {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.produto-card h3 {
+  font-size: 18px;
+  margin: 15px 0 8px;
+  color: #333;
+}
+
+.produto-card .preco {
+  font-size: 16px;
+  color: #f06292;
+  margin-bottom: 10px;
+}
+
+.produto-card button {
+  padding: 10px 20px;
+  background: #f06292;
+  border: none;
+  color: white;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.produto-card button:hover {
+  background: #c34e75;
+}
+
+/* -------- RESPONSIVO -------- */
+
+@media screen and (max-width: 600px) {
+  .produtos-section {
+    padding: 0 20px 40px;
+  }
+
+  .produto-card img {
+    height: 220px;
+  }
+}

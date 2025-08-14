@@ -1,0 +1,135 @@
+@import url('https://fonts.cdnfonts.com/css/futura-std-4');
+
+:root {
+  --footer-bg: #37222d;
+  --footer-text: #eee;
+  --footer-link: #ccc;
+  --footer-link-hover: #fff;
+  --footer-accent: #f06292;
+  --footer-icon-color: #f06292;
+}
+
+@font-face {
+  font-family: "Boulder";
+  src: url("../fonts/Boulder.woff2") format("woff2"),
+       url("../fonts/Boulder.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Futura";
+  src: url("../fonts/FuturaMedium.woff2") format("woff2"),
+       url("../fonts/FuturaMedium.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Futura Std", "Futura", sans-serif;
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 150px auto;
+  padding: 0 20px;
+}
+
+.produto {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.imagem {
+  flex: 1;
+  max-width: 50%;
+}
+
+.imagem img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.detalhes {
+  flex: 1;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+
+.detalhes h1 {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.detalhes .categoria {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 20px;
+}
+
+.detalhes .descricao {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.detalhes .preco {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.detalhes .estoque {
+  font-size: 14px;
+  color: green;
+  margin-bottom: 20px;
+}
+
+button.comprar {
+  padding: 12px 30px;
+  background-color: var(--footer-accent);
+  color: white;
+  border: none;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button.comprar:hover {
+  background-color: #c34e75;
+}
+
+button.comprar:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+  .produto {
+    flex-direction: column;
+  }
+
+  .imagem, .detalhes {
+    max-width: 100%;
+  }
+
+  .imagem img {
+    border-radius: 12px 12px 0 0;
+  }
+}
