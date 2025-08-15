@@ -163,6 +163,7 @@ CREATE TABLE `produto` (
   `descricao` text DEFAULT NULL,
   `preco` decimal(10,2) DEFAULT NULL,
   `estoque` int(11) DEFAULT NULL,
+  `data_cadastro` datetime DEFAULT NULL,
   `ativo` tinyint(1) DEFAULT NULL,
   `categoria_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

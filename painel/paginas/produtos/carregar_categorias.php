@@ -1,7 +1,7 @@
 <?php
 require_once("../../../conexao.php");
 
-$query = $pdo->query("SELECT id, nome FROM categorias ORDER BY nome ASC");
+$query = $pdo->query("SELECT id, nome FROM categoria ORDER BY nome ASC");
 $categorias = $query->fetchAll(PDO::FETCH_ASSOC);
 
 $options = '<option value="">Selecione uma categoria</option>';

@@ -1,13 +1,13 @@
 <?php
-    $pag = 'produtos_admin';
+$pag = 'produtos';
 ?>
 <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalForm" onclick="limparCamposProduto()">
     <span class="fa fa-plus"></span> Produtos
 </a>
 
 <div class="bs-example widget-shadow" style="padding:15px" id="listar">
-    <!-- Chamando o ajax.js -->
-    <script src="js/ajax-produtos.js"></script>
+    <!-- Aqui a lista será carregada pelo AJAX -->
+    <script src="../js/ajax-produtos.js"></script>
 </div>
 
 <!-- Modal Formulário -->
@@ -37,22 +37,32 @@
                             <label>Categoria</label>
                             <select class="form-control" id="categoria_id" name="categoria_id" required>
                                 <option value="">Selecione uma categoria</option>
-                                <!-- Opções serão preenchidas via AJAX -->
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label>Descrição</label>
-                            <textarea class="form-control" id="descricao" name="descricao" placeholder="Descrição do produto" rows="3"></textarea>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-6">
                             <label>Imagem URL</label>
                             <input type="text" class="form-control" id="imagem" name="imagem" placeholder="URL da imagem">
                         </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Ativo</label>
+                            <select class="form-control" id="ativo" name="ativo" required>
+                                <option>1</option>
+                                <option>0</option>
+                            </select>
+                        </div>
+                        
                         <div class="col-md-6">
                             <label>Estoque</label>
                             <input type="number" class="form-control" id="estoque" name="estoque" placeholder="Quantidade em estoque" value="0">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label>Descrição</label>
+                            <textarea class="form-control" id="descricao" name="descricao" placeholder="Descrição do produto" rows="3"></textarea>
                         </div>
                     </div>
                     <input type="hidden" class="form-control" id="id" name="id">
@@ -68,36 +78,65 @@
 </div>
 
 <script type="text/javascript">
-    var pag = "<?php echo $pag; ?>";
-    
-    $(document).ready(function(){
-        // Carregar categorias ao abrir o modal
-        $('#modalForm').on('show.bs.modal', function (e) {
-            carregarCategoriasProduto();
-        });
+var pag = "<?php echo $pag; ?>";
+
+$(document).ready(function(){
+    listarProdutos();
+
+    $('#modalForm').on('show.bs.modal', function (e) {
+        carregarCategoriasProduto();
     });
-    
-    // Funções específicas para produtos
-    function carregarCategoriasProduto(){
+
+    $("#form").submit(function(event){
+        event.preventDefault();
+
         $.ajax({
-            url: 'paginas/' + pag + '/carregar_categorias.php',
+            url: 'paginas/' + pag + '/inserir_produto.php',
             method: 'POST',
-            dataType: "html",
+            data: $(this).serialize(),
             success:function(result){
-                $("#categoria_id").html(result);
+                $("#mensagem").html(result);
+
+                if(result.includes("sucesso")){
+                    $('#modalForm').modal('hide');
+                    listarProdutos();
+                }
             }
         });
-    }
-    
-    function limparCamposProduto(){
-        $('#id').val('');
-        $('#nome').val('');
-        $('#preco').val('');
-        $('#categoria_id').val('');
-        $('#descricao').val('');
-        $('#imagem').val('');
-        $('#estoque').val('');
-        $('#titulo_inserir').text('Inserir Produto');
-        $('#mensagem').text('');
-    }
+    });
+});
+
+function carregarCategoriasProduto(){
+    $.ajax({
+        url: 'paginas/' + pag + '/carregar_categorias.php',
+        method: 'POST',
+        dataType: "html",
+        success:function(result){
+            $("#categoria_id").html(result);
+        }
+    });
+}
+
+function listarProdutos(){
+    $.ajax({
+        url: 'paginas/' + pag + '/listar_produtos.php',
+        method: 'POST',
+        dataType: "html",
+        success:function(result){
+            $("#listar").html(result);
+        }
+    });
+}
+
+function limparCamposProduto(){
+    $('#id').val('');
+    $('#nome').val('');
+    $('#preco').val('');
+    $('#categoria_id').val('');
+    $('#descricao').val('');
+    $('#imagem').val('');
+    $('#estoque').val('');
+    $('#titulo_inserir').text('Inserir Produto');
+    $('#mensagem').text('');
+}
 </script>
