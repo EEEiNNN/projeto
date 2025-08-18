@@ -1,3 +1,12 @@
+:root {
+  --footer-bg: #37222d;
+  --footer-text: #eee;
+  --footer-link: #ccc;
+  --footer-link-hover: #fff;
+  --footer-accent: #A1CCA5;
+  --footer-icon-color: #A1CCA5;
+}
+
 body {
   font-family: "Futura Std", "Futura", sans-serif;
   margin: 0;
@@ -63,13 +72,13 @@ body {
 
 .produto-card .preco {
   font-size: 16px;
-  color: #f06292;
+  color: var(--footer-accent);
   margin-bottom: 10px;
 }
 
 .produto-card button {
   padding: 10px 20px;
-  background: #f06292;
+  background: var(--footer-accent);
   border: none;
   color: white;
   font-size: 14px;
@@ -79,7 +88,7 @@ body {
 }
 
 .produto-card button:hover {
-  background: #c34e75;
+  background: #709775;
 }
 
 /* -------- RESPONSIVO -------- */

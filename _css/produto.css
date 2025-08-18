@@ -5,8 +5,8 @@
   --footer-text: #eee;
   --footer-link: #ccc;
   --footer-link-hover: #fff;
-  --footer-accent: #f06292;
-  --footer-icon-color: #f06292;
+  --footer-accent: #A1CCA5;
+  --footer-icon-color: #A1CCA5;
 }
 
 @font-face {
@@ -112,7 +112,7 @@ button.comprar {
 }
 
 button.comprar:hover {
-  background-color: #c34e75;
+  background-color: #709775;
 }
 
 button.comprar:disabled {

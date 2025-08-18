@@ -39,9 +39,16 @@ $pag = 'produtos';
                                 <option value="">Selecione uma categoria</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <label>Imagem URL</label>
                             <input type="text" class="form-control" id="imagem" name="imagem" placeholder="URL da imagem">
+                        </div>
+                        <div class="col-md-1">
+                                <label>Principal</label>
+                                <select class="form-control" id="principal" name="principal" required>
+                                    <option>1</option>
+                                    <option selected="selected">0</option>
+                                </select>
                         </div>
                     </div>
                     

@@ -25,10 +25,10 @@
         
        <div class="col">
             <h4>Categorias</h4>
-            <a href="">Anéis</a>
-            <a href="">Brincos</a>
-            <a href="">Colares</a>
-            <a href="">Pulseiras</a>
+            <a href="produtos.php?categoria=aneis">Anéis</a>
+            <a href="produtos.php?categoria=brincos">Brincos</a>
+            <a href="produtos.php?categoria=colares">Colares</a>
+            <a href="produtos.php?categoria=pulseiras">Pulseiras</a>
        </div>
       
         

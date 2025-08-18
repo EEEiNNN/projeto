@@ -49,7 +49,7 @@
 							<div class="col-md-6">							
 									<label>Nível</label>
 									<select class="form-control" id="nivel" name="nivel">
-                                        <option>user</option>
+                                        <option selected="selected">user</option>
                                         <option>admin</option>
                                     </select>
 							</div>	
