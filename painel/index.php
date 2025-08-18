@@ -154,14 +154,26 @@ if($linhas > 0){
 									<li><a href="index.php?pagina=usuarios"><i class="fa fa-angle-right"></i> Usuários</a></li>
 									
 								</ul>
+								<li class="treeview">
+								<a href="#">
+									<i class="fa fa-shopping-bag"></i>
+									<span>Produtos</span>
+									<i class="fa fa-angle-left pull-right"></i>
 								</a>
 								<ul class="treeview-menu">
 									<li><a href="index.php?pagina=produtos_admin"><i class="fa fa-angle-right"></i> Produtos</a></li>
 									
 								</ul>
-							</li>
-
-						</ul>
+								<li class="treeview">
+								<a href="#">
+									<i class="fa fa-shopping-bag"></i>
+									<span>Pedidos</span>
+									<i class="fa fa-angle-left pull-right"></i>
+								</a>
+								<ul class="treeview-menu">
+									<li><a href="index.php?pagina=pedidos_admin"><i class="fa fa-angle-right"></i> Pedidos</a></li>
+									
+								</ul>
 					</div>
 					<!-- /.navbar-collapse -->
 				</nav>

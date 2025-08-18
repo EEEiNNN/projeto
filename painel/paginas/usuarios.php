@@ -1,7 +1,5 @@
 <?php
     $pag = 'usuarios';
-
-
 ?>
 <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalForm">
     <span class="fa fa-plus"></span>Usuários
