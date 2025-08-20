@@ -11,6 +11,7 @@
 CREATE TABLE `carrinho` (
   `id` bigint(20) NOT NULL,
   `data_criacao` datetime DEFAULT NULL,
+  `quantidade` INT DEFAULT 1,
   `usuario_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -426,15 +427,6 @@ ALTER TABLE `produto`
 -- Inserções de dados para tabelas 
 -- 
 
--- Inserções de dados para tabela `produto`
-INSERT INTO `produto`(`id`, `nome`, `descricao`, `preco`, `estoque`, `data_cadastro`, `ativo`, `categoria_id`) 
-VALUES 
-(null,'Anel','Anel em Prata 925 com Ródio Negro e Calcedonia Verde','1000','12', NOW(), 1, 1),
-(null,'Brincos','Brincos em Prata 925 com Ródio Negro','350','20', NOW(), 1, 2), 
-(null,'Corrente','Corrente Cadeado em Ouro Branco 18k, 60cm','6290','2', NOW(), 1, 3), 
-(null,'Pulseira','Pulseira em Prata 925','1350','45', NOW(), 1, 4);
-
-
 -- Inserções de dados para tabela `categoria`
 INSERT INTO `categoria`(`nome`, `ativo`) 
 VALUES 
@@ -442,6 +434,14 @@ VALUES
 ('brincos','1'), 
 ('colares','1'), 
 ('pulseiras','1');
+
+-- Inserções de dados para tabela `produto`
+INSERT INTO `produto`(`id`, `nome`, `descricao`, `preco`, `estoque`, `data_cadastro`, `ativo`, `categoria_id`) 
+VALUES 
+(null,'Anel','Anel em Prata 925 com Ródio Negro e Calcedonia Verde','1000','12', NOW(), 1, 1),
+(null,'Brincos','Brincos em Prata 925 com Ródio Negro','350','20', NOW(), 1, 2), 
+(null,'Corrente','Corrente Cadeado em Ouro Branco 18k, 60cm','6290','2', NOW(), 1, 3), 
+(null,'Pulseira','Pulseira em Prata 925','1350','45', NOW(), 1, 4);
 
 -- Inserções de dados para tabela `imagemproduto
 INSERT INTO `imagemproduto`(`id`, `url_imagem`, `principal`, `produto_id`) 

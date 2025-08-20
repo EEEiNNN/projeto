@@ -1,4 +1,3 @@
-<?php session_start(); ?>
 <link rel="icon" type="image/png" href="_images/logo.jpeg">
 <link href="_css/header.css" rel="stylesheet">
 <link rel="icon" type="image/x-icon" href="_images/logo.jpeg">

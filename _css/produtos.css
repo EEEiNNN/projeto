@@ -9,7 +9,7 @@
 
 body {
   font-family: "Futura Std", "Futura", sans-serif;
-  margin: 0;
+  margin: 30px;
 }
 
 .titulo-pagina {
@@ -21,7 +21,10 @@ body {
 }
 
 .produtos-section {
-  padding: 0 40px 60px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 150px auto;
+  padding: 0 20px;
   background-color: #fdf9f9;
 }
 .produto-card a {
