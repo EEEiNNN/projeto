@@ -1,5 +1,6 @@
-<?php include 'header.php';?>
+<?php include 'header.php'; ?>
 <?php include 'conexao.php'; ?>
+<?php include 'models/Produto.php'; ?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -12,7 +13,7 @@
 <body>
 
 <!-- Produtos -->
-<main>
+<main style="background-color: #fdf9f9;">
   <section class="produtos-section">
     <?php
     // Verifica se uma categoria foi passada na URL
@@ -29,32 +30,30 @@
       <div class="produtos-grid">
 
         <?php
+        // Instancia o model Produto
+        $produtoModel = new Produto($pdo);
+
+        // Busca os produtos pelo model
         if ($categoriaSelecionada) {
-          $stmt = $pdo->prepare("SELECT p.id, p.nome, p.preco, i.url_imagem, c.nome AS categoria
-                                 FROM Produto p
-                                 LEFT JOIN Categoria c ON p.categoria_id = c.id
-                                 LEFT JOIN ImagemProduto i ON i.produto_id = p.id AND i.principal = 1
-                                 WHERE p.ativo = 1 AND c.nome = ?");
-          $stmt->execute([$categoriaSelecionada]);
+          $produtos = $produtoModel->getByCategoriaNome($categoriaSelecionada);
         } else {
-          $stmt = $pdo->query("SELECT p.id, p.nome, p.preco, i.url_imagem, c.nome AS categoria
-                               FROM Produto p
-                               LEFT JOIN Categoria c ON p.categoria_id = c.id
-                               LEFT JOIN ImagemProduto i ON i.produto_id = p.id AND i.principal = 1
-                               WHERE p.ativo = 1");
+          $produtos = $produtoModel->getAllAtivos();
         }
 
-        while ($produto = $stmt->fetch(PDO::FETCH_ASSOC)) :
+        // Loop para exibir os produtos
+        foreach ($produtos as $produto) :
+          // Pega a imagem principal (ou imagem padrão caso não exista)
+          $urlImagem = $produtoModel->getImagemPrincipal($produto['id']) ?? '_images/padrao.jpg';
         ?>
           <div class="produto-card">
             <a href="produto.php?id=<?= $produto['id'] ?>">
-              <img src="<?= $produto['url_imagem'] ?? '_images/padrao.jpg' ?>" alt="<?= htmlspecialchars($produto['nome']) ?>" />
+              <img src="<?= $urlImagem ?>" alt="<?= htmlspecialchars($produto['nome']) ?>" />
               <h3><?= htmlspecialchars($produto['nome']) ?></h3>
               <p class="preco">R$ <?= number_format($produto['preco'], 2, ',', '.') ?></p>
               <button class="btn btn-primary">Adicionar ao Carrinho</button>
             </a>
           </div>
-        <?php endwhile; ?>
+        <?php endforeach; ?>
 
       </div>
     </div>

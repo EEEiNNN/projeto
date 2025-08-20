@@ -294,10 +294,6 @@ ALTER TABLE `carrinho`
 ALTER TABLE `categoria`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
-  INSERT INTO `categoria`(`nome`, `ativo`) VALUES 
-('aneis','1'), ('brincos','1'), ('colares','1'), ('pulseiras','1');
-
-
 --
 -- AUTO_INCREMENT de tabela `credito`
 --
@@ -425,6 +421,35 @@ ALTER TABLE `pedido`
 --
 ALTER TABLE `produto`
   ADD CONSTRAINT `produto_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`);
+
+--
+-- Inserções de dados para tabelas 
+-- 
+
+-- Inserções de dados para tabela `produto`
+INSERT INTO `produto`(`id`, `nome`, `descricao`, `preco`, `estoque`, `data_cadastro`, `ativo`, `categoria_id`) 
+VALUES 
+(null,'Anel','Anel em Prata 925 com Ródio Negro e Calcedonia Verde','1000','12', NOW(), 1, 1),
+(null,'Brincos','Brincos em Prata 925 com Ródio Negro','350','20', NOW(), 1, 2), 
+(null,'Corrente','Corrente Cadeado em Ouro Branco 18k, 60cm','6290','2', NOW(), 1, 3), 
+(null,'Pulseira','Pulseira em Prata 925','1350','45', NOW(), 1, 4);
+
+
+-- Inserções de dados para tabela `categoria`
+INSERT INTO `categoria`(`nome`, `ativo`) 
+VALUES 
+('aneis','1'), 
+('brincos','1'), 
+('colares','1'), 
+('pulseiras','1');
+
+-- Inserções de dados para tabela `imagemproduto
+INSERT INTO `imagemproduto`(`id`, `url_imagem`, `principal`, `produto_id`) 
+VALUES 
+(null,'https://lojavivara.vtexassets.com/arquivos/ids/836005-1600-1600/Anel-Black-Iron-Man-em-Prata-925-com-Rodio-Negro-e-Calcedonia-Verde-9830_1_set.jpg?v=638470137685770000','1','1'), 
+(null,'https://lojavivara.vtexassets.com/arquivos/ids/752926-1600-1600/Brinco-Argola-Forza-em-Prata-925-com-Rodio-Negro-79329_1_set.jpg?v=638437299595900000','1','2'), 
+(null,'https://lojavivara.vtexassets.com/arquivos/ids/754277-1600-1600/Corrente-Cadeado-em-Ouro-Branco-18k-60cm-87784_1_set.jpg?v=638437301896300000','1','3'), 
+(null,'https://lojavivara.vtexassets.com/arquivos/ids/777228-1600-1600/Pulseira-Cronos-em-Prata-925-80897_1_set.jpg?v=638437347892600000','1','4'); 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
