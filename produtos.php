@@ -19,11 +19,7 @@
     // Verifica se uma categoria foi passada na URL
     $categoriaSelecionada = $_GET['categoria'] ?? null;
 
-    if ($categoriaSelecionada) {
-      echo "<h1 class='titulo-pagina'>Categoria: " . htmlspecialchars(ucfirst($categoriaSelecionada)) . "</h1>";
-    } else {
-      echo "<h1 class='titulo-pagina'>Nossos Produtos</h1>";
-    }
+    
     ?>
     
     <div class="produtos-grid-container">

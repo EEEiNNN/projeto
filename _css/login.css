@@ -9,65 +9,74 @@
 
 body {
     background-color: #251B18;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px; /* Adicionado para evitar que o box cole nas bordas em telas pequenas */
 }
 
-
 .box {
-    position: absolute;
+    position: relative; /* Mudado de absolute para relative */
     width: 400px;
-    height: 450px;
+    max-width: 100%; /* Garante que não ultrapasse a tela */
+    min-height: 450px; /* Altura mínima para acomodar os elementos */
+    height: auto; /* Altura automática para se ajustar ao conteúdo */
     border-radius: 8px;
     overflow: hidden;
     border: 4px solid white;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    padding: 30px 40px; /* Padding interno para o conteúdo */
 }
 
-box::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 400px;
-    height: 420px;
-    background: linear-gradient(0deg, transparent, transparent, #FFFFFF);
-    z-index: 1;
-}
-
-.borderLine {
-    position: absolute;
-    top: 0;
-    inset: 0;
-}
+/* A animação de gradiente foi removida pois não estava funcionando
+   corretamente com a estrutura e o z-index. O design limpo
+   com a borda branca já é bastante eficaz. */
 
 .box form {
-    position: absolute;
-    inset: 4px;
-    background: transparent;
-    padding: 50px 40px;
-    border-radius: 8px;
-    z-index: 1;
+    position: relative; /* Mudado de absolute para relative */
+    z-index: 2;
     display: flex;
     flex-direction: column;
 }
 
-.box form h2 {
-    color: #FFF;
-    font-weight: 500;
+/* Oculta os formulários por padrão */
+.form-container {
+    display: none;
+}
+
+/* Exibe apenas o formulário ativo */
+.form-container.active {
+    display: block;
+}
+
+/* Estilos para os botões de aba (Entrar/Cadastrar) */
+.tab-buttons {
     text-align: center;
-    letter-spacing: 0.1em;
-    z-index: 2;
-    margin-top: 30px;
+    margin-bottom: 25px;
+    position: relative;
+    z-index: 10;
+}
+
+.tab-button {
+    background: none;
+    border: none;
+    color: #8f8f8f;
+    font-size: 1.1em;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    border-bottom: 2px solid transparent; /* Linha sutil por baixo */
+}
+
+.tab-button.active {
+    color: #ffffff;
+    border-bottom-color: #A1CCA5; /* Cor da sua logo */
 }
 
 .box form .inputBox {
     position: relative;
-    width: 300px;
+    width: 100%; /* Ocupa 100% da largura do formulário */
     margin-top: 35px;
 }
 
@@ -79,7 +88,7 @@ box::before {
     outline: none;
     box-shadow: none;
     border: none;
-    color: #23242a;
+    color: #ffffff; /* Cor do texto digitado */
     font-size: 1em;
     letter-spacing: 0.05em;
     transition: 0.5s;
@@ -89,7 +98,7 @@ box::before {
 .box form .inputBox span {
     position: absolute;
     left: 0;
-    padding: 20px 0px 10px;
+    padding: 20px 10px 10px;
     pointer-events: none;
     color: #fff;
     font-size: 1em;
@@ -97,10 +106,11 @@ box::before {
     transition: 0.5s;
 }
 
-.box form .inputBox input:valid ~ span, .box form .inputBox input:focus ~ span {
-    color: #fff;
+.box form .inputBox input:valid ~ span,
+.box form .inputBox input:focus ~ span {
+    color: #A1CCA5; /* Cor de destaque ao focar */
     font-size: 0.75em;
-    transform: translateY(-34px)
+    transform: translateY(-34px);
 }
 
 .box form .inputBox i {
@@ -119,42 +129,55 @@ box::before {
 .box form .inputBox input:valid ~ i,
 .box form .inputBox input:focus ~ i {
     height: 44px;
+    background: #A1CCA5; /* Cor de destaque ao focar */
 }
 
 .box form .links {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start; /* Alinhado à esquerda */
+    margin-top: 15px;
 }
 
 .box form .links a {
-    margin: 10px 0;
-    font-size: 0.75em;
+    font-size: 0.85em;
     color: #fff;
     text-decoration: none;
+    transition: color 0.3s;
 }
 
-.box form .links a:hover,
-.box form .links a:nth-child(2) {
-    color: #fff;
+.box form .links a:hover {
+    color: #A1CCA5;
 }
 
 .box form input[type="submit"] {
     border: none;
     outline: none;
-    padding: 9px 25px;
+    padding: 11px 25px;
     background: #fff;
     cursor: pointer;
     font-size: 0.9em;
     border-radius: 4px;
     font-weight: 600;
-    width: 100px;
-    margin-top: 10px;
-    color: #709775;
+    width: 120px; /* Um pouco mais de largura */
+    margin-top: 20px;
+    color: #251B18; /* Cor do fundo para o texto */
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.box form input[type="submit"]:hover {
+    background-color: #A1CCA5;
+    color: #fff;
+}
+
+.box form input[type="submit"]:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    color: #aaa;
 }
 
 .figura {
     text-align: center;
-    margin-top: 20px;
+    margin-bottom: 20px; /* Espaço abaixo da logo */
     position: relative;
     z-index: 10;
 }
@@ -164,8 +187,28 @@ box::before {
     text-decoration: none;
     color: #A1CCA5;
     cursor: pointer;
-    font-size: xx-large;
-    position: relative;
+    font-size: 2.5em; /* Aumentado um pouco */
+}
+
+/* Estilos para a caixa de feedback (mensagens de erro/sucesso) */
+.feedback-message {
+    text-align: center;
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: 500;
+    display: none; /* Começa escondido */
     z-index: 10;
-    display: inline-bloc
+    position: relative;
+}
+
+.feedback-message.success {
+    background-color: #28a745;
+    color: white;
+}
+
+.feedback-message.error {
+    background-color: #dc3545;
+    color: white;
 }
