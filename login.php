@@ -8,8 +8,8 @@ try {
     if ($query->rowCount() == 0) {
         $senha_hash = password_hash('123', PASSWORD_DEFAULT);
         $pdo->prepare(
-            "INSERT INTO usuarios (nome, email, senha, endereco, nivel, ativo, foto) 
-             VALUES ('Administrador', 'admin@admin.com', ?, 'Endereço Padrão', 'admin', 'Sim', 'sem-foto.jpg')"
+            "INSERT INTO usuarios (nome, email, senha, endereco, nivel, ativo) 
+             VALUES ('Administrador', 'admin@admin.com', ?, 'Endereço Padrão', 'admin', 'Sim')"
         )->execute([$senha_hash]);
     }
 } catch (PDOException $e) {

@@ -50,7 +50,9 @@ include 'header.php';
         </p>
 
         <?php if ($produto['estoque'] > 0): ?>
-          <button class="comprar">Adicionar ao carrinho</button>
+          <button class="comprar btn-add-carrinho" data-produto-id="<?= $produto['id'] ?>">
+            Adicionar ao carrinho
+          </button>
         <?php else: ?>
           <button class="comprar" disabled>Indisponível</button>
         <?php endif; ?>
@@ -58,9 +60,10 @@ include 'header.php';
     </div>
   </div>
 
+  <?php include 'footer.php'; ?>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" 
           integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" 
           crossorigin="anonymous"></script>
-  <?php include 'footer.php'; ?>
+  <script src="js/shop_events.js"></script>
 </body>
 </html>

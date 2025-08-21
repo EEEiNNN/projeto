@@ -183,7 +183,6 @@ CREATE TABLE `usuarios` (
   `endereco` text DEFAULT NULL,
   `nivel` enum('admin','user') DEFAULT 'user',
   `senha` varchar(255) NOT NULL,
-  `foto` varchar(255) DEFAULT 'sem-foto.jpg',
   `ativo` enum('Sim','Não') DEFAULT 'Sim',
   `data` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

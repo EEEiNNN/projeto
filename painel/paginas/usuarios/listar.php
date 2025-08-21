@@ -33,7 +33,6 @@ if($linhas > 0){
         $ativo = $res[$i]['ativo'] ?? '';
         $data = $res[$i]['data'] ?? '';
         $senha = $res[$i]['senha'] ?? '';
-        $foto = $res[$i]['foto'] ?? '';
 
         $dataF = $data ? implode('/', array_reverse(explode('-', $data))) : '';
 
@@ -62,7 +61,6 @@ if($linhas > 0){
         $telefone_esc = htmlspecialchars($telefone, ENT_QUOTES);
         $endereco_esc = htmlspecialchars($endereco, ENT_QUOTES);
         $nivel_esc = htmlspecialchars($nivel, ENT_QUOTES);
-        $foto_esc = htmlspecialchars($foto, ENT_QUOTES);
         $ativo_esc = htmlspecialchars($ativo, ENT_QUOTES);
         $dataF_esc = htmlspecialchars($dataF, ENT_QUOTES);
         $senha_esc = htmlspecialchars($senha, ENT_QUOTES);
@@ -93,7 +91,7 @@ if($linhas > 0){
                     </li>
 
                     <big>
-                        <a href="#" onclick="mostrar('{$nome_esc}', '{$email_esc}', '{$telefone_esc}', '{$endereco_esc}', '{$ativo_esc}', '{$dataF_esc}', '{$senha_esc}', '{$nivel_esc}', '{$foto_esc}')" title="Mostrar Dados">
+                        <a href="#" onclick="mostrar('{$nome_esc}', '{$email_esc}', '{$telefone_esc}', '{$endereco_esc}', '{$ativo_esc}', '{$dataF_esc}', '{$senha_esc}', '{$nivel_esc}')" title="Mostrar Dados">
                             <i class="fa fa-info-circle text-primary"></i>
                         </a>
                     </big>
@@ -157,7 +155,7 @@ if($linhas > 0){
         $('#modalForm').modal('show');
     }
 
-    function mostrar(nome, email, telefone, endereco, ativo, data, senha, nivel, foto){
+    function mostrar(nome, email, telefone, endereco, ativo, data, senha, nivel){
         $('#titulo_dados').text(nome);
         $('#email_dados').text(email);
         $('#telefone_dados').text(telefone);
@@ -165,7 +163,6 @@ if($linhas > 0){
         $('#ativo_dados').text(ativo);
         $('#data_dados').text(data);
         $('#nivel_dados').text(nivel);
-        $('#foto_dados').attr("src","images/perfil/" + foto);
 
         $('#modalDados').modal('show');
     }

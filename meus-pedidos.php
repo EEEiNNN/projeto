@@ -58,27 +58,6 @@ function getStatusIcon($status) {
     <title>Meus Pedidos | Ben-David</title>
 </head>
 <body>
-    <header class="header-simple">
-        <nav>
-            <div class="nav__logo"><a href="index.php">Ben-David</a></div>
-            <ul class="nav__links" id="nav-links">
-                <li class="link"><a href="index.php">Home</a></li>
-                <li class="link"><a href="produtos.php">Produtos</a></li>
-                <li class="link"><a href="carrinho.php">Carrinho</a></li>
-                <li class="link"><a href="meus-pedidos.php">Meus Pedidos</a></li>
-            </ul>
-            <div class="nav__menu__btn" id="menu-btn">
-                <span><i class="ri-menu-line"></i></span>
-            </div>
-            <div class="nav__actions">
-                <div class="user-menu">
-                    <span class="user-name">Olá, <?php echo h($_SESSION['user_name']); ?></span>
-                    <a href="auth.php?logout=1" class="logout-btn">Sair</a>
-                </div>
-            </div>
-        </nav>
-    </header>
-
     <section class="pedidos-section">
         <div class="section__container">
             <h1 class="section__header">Meus Pedidos</h1>
@@ -167,32 +146,6 @@ function getStatusIcon($status) {
             </div>
         </div>
     </div>
-
-    <footer class="footer">
-        <div class="section__container footer__container">
-            <div class="footer__content">
-                <h4>RECEBA NOVIDADES E LANÇAMENTOS</h4>
-                <p>Cadastre-se para receber promoções, cupons e novas coleções.</p>
-            </div>
-            <div class="footer__form">
-                <form action="/">
-                    <input type="text" placeholder="Digite seu e-mail" />
-                    <button>Assinar</button>
-                </form>
-            </div>
-        </div>
-        <div class="section__container footer__bar">
-            <div class="footer__logo">
-                <h4><a href="#">Ben-David</a></h4>
-                <p>© 2025 Ben-David. Todos os direitos reservados.</p>
-            </div>
-            <ul class="footer__nav">
-                <li class="footer__link"><a href="#">Sobre</a></li>
-                <li class="footer__link"><a href="#">Parcerias</a></li>
-                <li class="footer__link"><a href="#">Política de Privacidade</a></li>
-            </ul>
-        </div>
-    </footer>
 
     <script src="js/main.js"></script>
     <script src="js/pedidos.js"></script>

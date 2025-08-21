@@ -16,8 +16,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($exists > 0) {
             echo "<script>alert('Este e-mail já está cadastrado!');</script>";
         } else {
-            $query = $pdo->prepare("INSERT INTO usuarios (nome, email, senha, endereco, nivel, ativo, foto) 
-                VALUES (:nome, :email, :senha, NULL, 'user', 'Sim', 'sem-foto.jpg')");
+            $query = $pdo->prepare("INSERT INTO usuarios (nome, email, senha, endereco, nivel, ativo) 
+                VALUES (:nome, :email, :senha, NULL, 'user', 'Sim')");
             $query->execute([
                 ':nome' => $nome,
                 ':email' => $email,

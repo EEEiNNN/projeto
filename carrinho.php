@@ -4,7 +4,7 @@ require_once 'conexao.php';
 
 // Verificar se usuário está logado
 if (!isLoggedIn()) {
-    header('Location: index.php');
+    header('Location: login.php');
     exit;
 }
 
@@ -181,20 +181,8 @@ foreach ($itens_carrinho as $item) {
     <title>Carrinho | Ben-David</title>
 </head>
 <body>
-    <header class="header-simple">
-        <nav>
-            <div class="nav__logo"><a href="index.php">Ben-David</a></div>
-            <ul class="nav__links" id="nav-links">
-                <li class="link"><a href="index.php">Home</a></li>
-                <li class="link"><a href="index.php">Sobre</a></li>
-                <li class="link"><a href="produtos.php">Produtos</a></li>
-                <li class="link"><a href="index.php">Coleção</a></li>
-            </ul>
-            <div class="nav__menu__btn" id="menu-btn">
-                <span><i class="ri-menu-line"></i></span>
-            </div>
-        </nav>
-    </header>
+    <?php /* [NOVO] Adicionei a inclusão do header.php aqui */ ?>
+    <?php include 'header.php'; ?>
 
     <section class="carrinho-section">
         <div class="section__container">
@@ -222,13 +210,18 @@ foreach ($itens_carrinho as $item) {
                                 </div>
                                 <div class="item-controls">
                                     <div class="quantidade-control">
+                                        
                                         <button class="btn-quantidade" data-action="diminuir" data-produto="<?php echo $item['produto_id']; ?>">-</button>
-                                        <input type="number" class="quantidade-input" value="<?php echo $item['quantidade']; ?>" min="1" max="<?php echo $item['estoque']; ?>" data-produto="<?php echo $item['produto_id']; ?>" />
+                                        
+                                        <input type="number" class="quantidade-input" value="<?php echo $item['quantidade']; ?>" min="0" max="<?php echo $item['estoque']; ?>" data-produto="<?php echo $item['produto_id']; ?>" />
+                                        
                                         <button class="btn-quantidade" data-action="aumentar" data-produto="<?php echo $item['produto_id']; ?>">+</button>
+
                                     </div>
                                     <div class="item-subtotal">
                                         <strong>R$ <?php echo number_format($item['subtotal'], 2, ',', '.'); ?></strong>
                                     </div>
+                                    
                                     <button class="btn-remover" data-produto="<?php echo $item['produto_id']; ?>">
                                         <i class="ri-delete-bin-line"></i>
                                     </button>
@@ -265,7 +258,7 @@ foreach ($itens_carrinho as $item) {
 
     <?php include 'footer.php'; ?>
 
-    <script src="js/main.js"></script>
-    <script src="js/carrinho.js"></script>
+    <script src="js/main.js"></script> 
+    <script src="js/carrinho.js"></script> 
 </body>
 </html>

@@ -2,11 +2,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
 
 :root {
-  --primary-color: #2c3e50; /* Um azul escuro sóbrio */
-  --primary-color-light: #34495e;
+  --primary-color: #709775; /* Um azul escuro sóbrio */
+  --primary-color-light: #A1CCA5;
   --secondary-color: #e74c3c; /* Um vermelho para ações de remoção */
-  --text-dark: #1f2937;
-  --text-light: #7f8c8d;
+  --text-dark: #709775;
+  --text-light: #A1CCA5;
   --extra-light: #f1f5f9;
   --white: #ffffff;
   --max-width: 1200px;
