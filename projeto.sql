@@ -110,15 +110,15 @@ CREATE TABLE `itemcarrinho` (
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `itempedido`
+-- Estrutura para tabela `itempedidos`
 --
 
-CREATE TABLE `itempedido` (
+CREATE TABLE `itempedidos` (
   `id` bigint(20) NOT NULL,
   `preco` decimal(10,2) DEFAULT NULL,
   `quantidade` int(11) DEFAULT NULL,
   `produto_id` bigint(20) DEFAULT NULL,
-  `pedido_id` bigint(20) DEFAULT NULL
+  `pedidos_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -139,14 +139,14 @@ CREATE TABLE `pagamento` (
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `pedido`
+-- Estrutura para tabela `pedidos`
 --
 
-CREATE TABLE `pedido` (
+CREATE TABLE `pedidos` (
   `id` bigint(20) NOT NULL,
   `status` varchar(50) DEFAULT NULL,
   `total` decimal(10,2) DEFAULT NULL,
-  `data_pedido` datetime DEFAULT NULL,
+  `data_pedidos` datetime DEFAULT NULL,
   `usuario_id` bigint(20) DEFAULT NULL,
   `endereco_id` bigint(20) DEFAULT NULL,
   `carrinho_id` bigint(20) DEFAULT NULL
@@ -180,7 +180,7 @@ CREATE TABLE `usuarios` (
   `nome` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `telefone` varchar(15) DEFAULT NULL,
-  `endereco` text DEFAULT NULL,
+  `endereco_id` bigint(20) DEFAULT NULL,
   `nivel` enum('admin','user') DEFAULT 'user',
   `senha` varchar(255) NULL,
   `status` ENUM('ativo','pendente','inativo') NOT NULL DEFAULT 'ativo',
@@ -242,12 +242,12 @@ ALTER TABLE `itemcarrinho`
   ADD KEY `carrinho_id` (`carrinho_id`);
 
 --
--- Índices de tabela `itempedido`
+-- Índices de tabela `itempedidos`
 --
-ALTER TABLE `itempedido`
+ALTER TABLE `itempedidos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `produto_id` (`produto_id`),
-  ADD KEY `pedido_id` (`pedido_id`);
+  ADD KEY `pedidos_id` (`pedidos_id`);
 
 --
 -- Índices de tabela `pagamento`
@@ -257,9 +257,9 @@ ALTER TABLE `pagamento`
   ADD KEY `carrinho_id` (`carrinho_id`);
 
 --
--- Índices de tabela `pedido`
+-- Índices de tabela `pedidos`
 --
-ALTER TABLE `pedido`
+ALTER TABLE `pedidos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`),
   ADD KEY `endereco_id` (`endereco_id`),
@@ -277,7 +277,8 @@ ALTER TABLE `produto`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`);
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `endereco_id` (`endereco_id`);
 
 --
 -- AUTO_INCREMENT para tabelas despejadas
@@ -326,9 +327,9 @@ ALTER TABLE `itemcarrinho`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `itempedido`
+-- AUTO_INCREMENT de tabela `itempedidos`
 --
-ALTER TABLE `itempedido`
+ALTER TABLE `itempedidos`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
@@ -338,9 +339,9 @@ ALTER TABLE `pagamento`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT de tabela `pedido`
+-- AUTO_INCREMENT de tabela `pedidos`
 --
-ALTER TABLE `pedido`
+ALTER TABLE `pedidos`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
@@ -353,11 +354,17 @@ ALTER TABLE `produto`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT; 
 
 --
 -- Restrições para tabelas despejadas
 --
+
+--
+-- Restrições para tabelas `usuarios`
+--
+ALTER TABLE `usuarios`
+ ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`);
 
 --
 -- Restrições para tabelas `carrinho`
@@ -397,11 +404,11 @@ ALTER TABLE `itemcarrinho`
   ADD CONSTRAINT `itemcarrinho_ibfk_2` FOREIGN KEY (`carrinho_id`) REFERENCES `carrinho` (`id`);
 
 --
--- Restrições para tabelas `itempedido`
+-- Restrições para tabelas `itempedidos`
 --
-ALTER TABLE `itempedido`
-  ADD CONSTRAINT `itempedido_ibfk_1` FOREIGN KEY (`produto_id`) REFERENCES `produto` (`id`),
-  ADD CONSTRAINT `itempedido_ibfk_2` FOREIGN KEY (`pedido_id`) REFERENCES `pedido` (`id`);
+ALTER TABLE `itempedidos`
+  ADD CONSTRAINT `itempedidos_ibfk_1` FOREIGN KEY (`produto_id`) REFERENCES `produto` (`id`),
+  ADD CONSTRAINT `itempedidos_ibfk_2` FOREIGN KEY (`pedidos_id`) REFERENCES `pedidos` (`id`);
 
 --
 -- Restrições para tabelas `pagamento`
@@ -410,12 +417,12 @@ ALTER TABLE `pagamento`
   ADD CONSTRAINT `pagamento_ibfk_1` FOREIGN KEY (`carrinho_id`) REFERENCES `carrinho` (`id`);
 
 --
--- Restrições para tabelas `pedido`
+-- Restrições para tabelas `pedidos`
 --
-ALTER TABLE `pedido`
-  ADD CONSTRAINT `pedido_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`),
-  ADD CONSTRAINT `pedido_ibfk_2` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`),
-  ADD CONSTRAINT `pedido_ibfk_3` FOREIGN KEY (`carrinho_id`) REFERENCES `carrinho` (`id`);
+ALTER TABLE `pedidos`
+  ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`),
+  ADD CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`),
+  ADD CONSTRAINT `pedidos_ibfk_3` FOREIGN KEY (`carrinho_id`) REFERENCES `carrinho` (`id`);
 
 --
 -- Restrições para tabelas `produto`

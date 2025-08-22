@@ -1,13 +1,22 @@
 <?php
-
-$tabela = 'usuarios';
 require_once("../../../conexao.php");
 
-$query = $pdo->query("SELECT * FROM $tabela ORDER BY id DESC");
+// [CORREÇÃO] A query agora usa LEFT JOIN para buscar os dados do endereço associado ao utilizador
+$query = $pdo->query("
+    SELECT 
+        u.id, u.nome, u.email, u.telefone, u.nivel, u.ativo, u.data, u.senha,
+        e.id as endereco_id, e.cep, e.rua, e.numero, e.complemento, e.bairro, e.cidade, e.estado 
+    FROM 
+        usuarios u 
+    LEFT JOIN 
+        endereco e ON u.endereco_id = e.id 
+    ORDER BY u.id DESC
+");
+
 $res = $query->fetchAll(PDO::FETCH_ASSOC);
 $linhas = count($res);
 
-if($linhas > 0){
+if ($linhas > 0) {
     echo <<<HTML
     <small>
         <table class="table table-hover" id="tabela">
@@ -16,71 +25,58 @@ if($linhas > 0){
                     <th>Nome</th>
                     <th class="esc">Email</th>
                     <th class="esc">Telefone</th>
-                    <th class="esc">nivel</th>
+                    <th class="esc">Nível</th>
                     <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
     HTML;
     
-    for($i = 0; $i < $linhas; $i++){
-        $id = $res[$i]['id'] ?? '';
-        $nome = $res[$i]['nome'] ?? '';
-        $telefone = $res[$i]['telefone'] ?? '';
-        $email = $res[$i]['email'] ?? '';
-        $nivel = $res[$i]['nivel'] ?? '';
-        $endereco = $res[$i]['endereco'] ?? '';
-        $ativo = $res[$i]['ativo'] ?? '';
-        $data = $res[$i]['data'] ?? '';
-        $senha = $res[$i]['senha'] ?? '';
+    foreach ($res as $item) {
+        $id = $item['id'];
+        $nome = htmlspecialchars($item['nome'], ENT_QUOTES);
+        $email = htmlspecialchars($item['email'], ENT_QUOTES);
+        $telefone = htmlspecialchars($item['telefone'] ?? '', ENT_QUOTES);
+        $nivel = htmlspecialchars($item['nivel'], ENT_QUOTES);
+        $ativo = $item['ativo'];
+        $dataF = $item['data'] ? date('d/m/Y', strtotime($item['data'])) : '';
+        $senha = '******'; // A senha nunca deve ser exposta
 
-        $dataF = $data ? implode('/', array_reverse(explode('-', $data))) : '';
+        // [CORREÇÃO] Pega os dados individuais do endereço
+        $endereco_id = $item['endereco_id'] ?? '';
+        $cep = htmlspecialchars($item['cep'] ?? '', ENT_QUOTES);
+        $rua = htmlspecialchars($item['rua'] ?? '', ENT_QUOTES);
+        $numero = htmlspecialchars($item['numero'] ?? '', ENT_QUOTES);
+        $complemento = htmlspecialchars($item['complemento'] ?? '', ENT_QUOTES);
+        $bairro = htmlspecialchars($item['bairro'] ?? '', ENT_QUOTES);
+        $cidade = htmlspecialchars($item['cidade'] ?? '', ENT_QUOTES);
+        $estado = htmlspecialchars($item['estado'] ?? '', ENT_QUOTES);
 
-        // Botões para Ativar e Desativar
-        if($ativo === 'Sim'){
+        // Lógica para ícone de ativação
+        if ($ativo === 'Sim') {
             $icone = 'fa-check-square';
-            $titulo_link = 'Desativar Usuário';
+            $titulo_link = 'Desativar Utilizador';
             $acao = 'Não';
-            $class_ativo = '';
         } else {
-            $icone = 'fa-check-o';
-            $titulo_link = 'Ativar Usuário';
+            $icone = 'fa-square-o'; // Ícone diferente para 'Não'
+            $titulo_link = 'Ativar Utilizador';
             $acao = 'Sim';
-            $class_ativo = '#c4c4c4';
         }
+        
+        $ocultar_adm = (strtolower($nivel) === 'admin') ? 'ocultar' : '';
 
-        $mostrar_adm = '';
-        if(strtolower($nivel) === 'admin'){
-            $senha = '******';
-            $mostrar_adm = 'ocultar';
-        }
-
-        // Escapar saída para segurança (exemplo simples, pode usar htmlspecialchars)
-        $nome_esc = htmlspecialchars($nome, ENT_QUOTES);
-        $email_esc = htmlspecialchars($email, ENT_QUOTES);
-        $telefone_esc = htmlspecialchars($telefone, ENT_QUOTES);
-        $endereco_esc = htmlspecialchars($endereco, ENT_QUOTES);
-        $nivel_esc = htmlspecialchars($nivel, ENT_QUOTES);
-        $ativo_esc = htmlspecialchars($ativo, ENT_QUOTES);
-        $dataF_esc = htmlspecialchars($dataF, ENT_QUOTES);
-        $senha_esc = htmlspecialchars($senha, ENT_QUOTES);
-
+        // [CORREÇÃO] As funções onclick agora passam todos os parâmetros do endereço
         echo <<<HTML
             <tr>
-                <td>{$nome_esc}</td>
-                <td class="esc">{$email_esc}</td>
-                <td class="esc">{$telefone_esc}</td>
+                <td>{$nome}</td>
+                <td class="esc">{$email}</td>
+                <td class="esc">{$telefone}</td>
                 <td class="esc">{$nivel}</td>
                 <td>
-                    <big><a href="#" onclick="editar('{$id}', '{$nome_esc}', '{$email_esc}', '{$telefone_esc}', '{$endereco_esc}', '{$nivel_esc}')" title="Editar Dados"><i class="fa fa-edit text-primary"></i></a></big>
+                    <big><a href="#" onclick="editar('{$id}', '{$nome}', '{$email}', '{$telefone}', '{$nivel}', '{$cep}', '{$rua}', '{$numero}', '{$complemento}', '{$bairro}', '{$cidade}', '{$estado}', '{$endereco_id}')" title="Editar Dados"><i class="fa fa-edit text-primary"></i></a></big>
 
-                    <li class="dropdown head-dpdn2" style="display: inline-block">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            <big>
-                                <i class="fa fa-trash-o text-danger"></i>
-                            </big>
-                        </a>
-
+                    <li class="dropdown head-dpdn2" style="display: inline-block;">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><big><i class="fa fa-trash-o text-danger"></i></big></a>
                         <ul class="dropdown-menu" style="margin-left: -230px;">
                             <li>
                                 <div class="notification_desc2">
@@ -90,127 +86,33 @@ if($linhas > 0){
                         </ul>
                     </li>
 
-                    <big>
-                        <a href="#" onclick="mostrar('{$nome_esc}', '{$email_esc}', '{$telefone_esc}', '{$endereco_esc}', '{$ativo_esc}', '{$dataF_esc}', '{$senha_esc}', '{$nivel_esc}')" title="Mostrar Dados">
-                            <i class="fa fa-info-circle text-primary"></i>
-                        </a>
-                    </big>
+                    <big><a href="#" onclick="mostrar('{$nome}', '{$email}', '{$telefone}', '{$nivel}', '{$ativo}', '{$dataF}', '{$cep}', '{$rua}', '{$numero}', '{$bairro}', '{$cidade}', '{$estado}')" title="Mostrar Dados"><i class="fa fa-info-circle text-secondary"></i></a></big>
 
-                    <big>
-                        <a href="#" onclick="ativar('{$id}', '{$acao}')" title="{$titulo_link}">
-                            <i class="fa {$icone} text-success"></i>
-                        </a>
-                    </big>
+                    <big><a href="#" onclick="ativar('{$id}', '{$acao}')" title="{$titulo_link}"><i class="fa {$icone} text-success"></i></a></big>
 
-                    <big>
-                        <a class="{$mostrar_adm}" href="#" onclick="permissoes('{$id}', '{$nome_esc}')" title="Dar permissões">
-                            <i class="fa fa-lock text-primary"></i>
-                        </a>
-                    </big>
-
+                    <big><a class="{$ocultar_adm}" href="#" onclick="permissoes('{$id}', '{$nome}')" title="Dar permissões"><i class="fa fa-lock text-primary"></i></a></big>
                 </td>
             </tr>
         HTML;
-    } // fecha o for
-
+    }
+    
     echo <<<HTML
             </tbody>
-            <small>
-                <div align="center" id="mensagem-excluir"></div>
-            </small>
         </table>
+    </small>
     HTML;
-    
-} else {
-    echo '<small>Nenhum Registro Encontrado</small>';
-}
 
+} else {
+    echo '<small>Nenhum Registo Encontrado</small>';
+}
 ?>
 
 <script type="text/javascript">
-    $(document).ready(function(){
+    $(document).ready(function() {
         $('#tabela').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/2.3.1/i18n/pt-BR.json"
-            },
+            "language": { "url": "//cdn.datatables.net/plug-ins/1.13.2/i18n/pt-BR.json" },
             "ordering": false,
             "stateSave": true
         });
     });
-</script>
-
-<!-- Funções para usuários -->
-<script type="text/javascript">
-    function editar(id, nome, email, telefone, endereco, nivel){
-        $('#mensagem').text('');
-        $('#titulo_inserir').text('Editar Registro');
-
-        $('#id').val(id);
-        $('#nome').val(nome);
-        $('#email').val(email);
-        $('#telefone').val(telefone);
-        $('#endereco').val(endereco);
-        $('#nivel').val(nivel).change();
-
-        $('#modalForm').modal('show');
-    }
-
-    function mostrar(nome, email, telefone, endereco, ativo, data, senha, nivel){
-        $('#titulo_dados').text(nome);
-        $('#email_dados').text(email);
-        $('#telefone_dados').text(telefone);
-        $('#endereco_dados').text(endereco);
-        $('#ativo_dados').text(ativo);
-        $('#data_dados').text(data);
-        $('#nivel_dados').text(nivel);
-
-        $('#modalDados').modal('show');
-    }
-
-    function limparCampos(){
-        $('#id').val('');
-        $('#nome').val('');
-        $('#email').val('');
-        $('#telefone').val('');
-        $('#endereco').val('');
-        $('#ids').val('');
-        $('#btn-deletar').hide();
-    }
-    
-    function selecionar(id){
-        var ids = $('#ids').val();
-
-        if($('#seletor-'+id).is(":checked") == true){
-            var novo_id = ids + id + '-';
-            $('#ids').val(novo_id);
-        }else{
-            var retirar = ids.replace(id + '-', '');
-            $('#ids').val(retirar);
-        }
-
-        var ids_final = $('#ids').val();
-        if(ids_final == ""){
-            $('#btn-deletar').hide();
-        }else{
-            $('#btn-deletar').show();
-        }
-    }
-
-    function deletarSel(){
-        var ids = $('#ids').val();
-        var id = ids.split("-");
-        for(i=0; i < id.length - 1; i++){
-            excluir(id[i]);
-        }
-
-        limparCampos();
-    }
-
-    function permissoes(id, nome){
-        $('#id_permissoes').val(id);
-        $('#nome_permissoes').text(nome);
-
-        $('#modalPermissoes').modal('show');
-        listarPermissoes(id);
-    }
 </script>

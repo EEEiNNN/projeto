@@ -1,7 +1,7 @@
 <?php
-    $pag = 'pedidos'; 
+$pag = 'pedidos';
+// Este ficheiro é incluído a partir do painel/index.php, que já tem a conexão.
 ?>
-
 <a type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalForm">
     <span class="fa fa-plus"></span> Novo Pedido
 </a>
@@ -22,11 +22,10 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <label>Usuário</label>
+                            <label>Cliente</label>
                             <select class="form-control" id="usuario_id" name="usuario_id" required>
                                 <?php
-                                // CORREÇÃO: Usa a variável $pdo já existente de 'index.php'
-                                $query_usuarios = $pdo->query("SELECT id, nome FROM usuarios ORDER BY nome");
+                                $query_usuarios = $pdo->query("SELECT id, nome FROM usuarios WHERE nivel = 'user' ORDER BY nome");
                                 $usuarios = $query_usuarios->fetchAll(PDO::FETCH_ASSOC);
                                 foreach ($usuarios as $usuario) {
                                     echo "<option value='{$usuario['id']}'>{$usuario['nome']}</option>";
@@ -46,16 +45,16 @@
                         </div>
                     </div>
                     <div class="row" style="margin-top: 10px;">
-                        <div class="col-md-12">
+                         <div class="col-md-12">
                             <label>Endereço de Entrega</label>
-                            <input type="text" class="form-control" id="endereco_entrega" name="endereco_entrega" placeholder="Endereço Completo" required>
+                            <input type="text" class="form-control" name="endereco_entrega" id="endereco_entrega" placeholder="Endereço Completo">
                         </div>
                     </div>
                     <hr>
                     <h5>Itens do Pedido</h5>
                     <div id="pedido_itens">
                         </div>
-                    <button type="button" class="btn btn-success btn-sm" onclick="adicionarItem()">Adicionar Produto</button>
+                    <button type="button" class="btn btn-success btn-sm mt-2" onclick="adicionarItem()">Adicionar Produto</button>
                     
                     <input type="hidden" id="id" name="id">
                     <br><br>
@@ -69,38 +68,28 @@
     </div>
 </div>
 
-<div class="modal fade" id="modalDados" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title" id="exampleModalLabel">Detalhes do Pedido: <span id="titulo_dados"></span></h4>
-				<button id="btn-fechar-dados" type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -25px">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-            <div class="modal-body" id="corpo_dados">
-                </div>
-        </div>
-    </div>
-</div>
-
-<script type="text/javascript">
+<script>
     var pag = "<?=$pag?>";
+    // Assumindo que o seu ajax.js já lida com o carregamento inicial da lista
 </script>
-<script src="js/ajax.js"></script> <script>
+<script src="js/ajax.js"></script>
+
+<script>
     let itemIndex = 0;
 
     function adicionarItem(produto_id = '', quantidade = 1, preco_unitario = 0) {
         itemIndex++;
         const div = document.createElement('div');
-        div.className = 'row item-pedido mb-2';
+        div.className = 'row item-pedido align-items-end'; // `align-items-end` para alinhar o botão
         div.style.marginBottom = '10px';
         div.innerHTML = `
             <div class="col-md-5">
+                <label class="form-label">Produto</label>
                 <select class="form-control" name="produtos[${itemIndex}][produto_id]" onchange="atualizarPreco(this)" required>
                     <option value="">Selecione um Produto</option>
                     <?php
-                    $query_produtos = $pdo->query("SELECT id, nome, preco FROM produtos WHERE ativo = TRUE ORDER BY nome");
+                    // [CORREÇÃO] Nome da tabela é 'produto', não 'produtos'
+                    $query_produtos = $pdo->query("SELECT id, nome, preco FROM produto WHERE ativo = 1 ORDER BY nome");
                     $produtos = $query_produtos->fetchAll(PDO::FETCH_ASSOC);
                     foreach ($produtos as $p) {
                         echo "<option value='{$p['id']}' data-preco='{$p['preco']}'>{$p['nome']}</option>";
@@ -109,10 +98,12 @@
                 </select>
             </div>
             <div class="col-md-2">
+                <label class="form-label">Qtd.</label>
                 <input type="number" class="form-control" name="produtos[${itemIndex}][quantidade]" value="${quantidade}" min="1" required>
             </div>
             <div class="col-md-3">
-                <input type="text" class="form-control preco-unitario" name="produtos[${itemIndex}][preco]" value="${preco_unitario.toFixed(2)}" readonly>
+                <label class="form-label">Preço Unit.</label>
+                <input type="text" class="form-control preco-unitario" name="produtos[${itemIndex}][preco_unitario]" value="${parseFloat(preco_unitario).toFixed(2)}" readonly>
             </div>
             <div class="col-md-2">
                 <button type="button" class="btn btn-danger btn-sm" onclick="removerItem(this)">Remover</button>
@@ -120,9 +111,10 @@
         `;
         document.getElementById('pedido_itens').appendChild(div);
 
-        // Se for edição, seleciona o produto correto
+        // Se for um item existente (na edição), seleciona o produto correto
         if (produto_id) {
-            div.querySelector('select').value = produto_id;
+            const select = div.querySelector('select');
+            select.value = produto_id;
         }
     }
 
@@ -137,11 +129,44 @@
         precoInput.value = parseFloat(preco).toFixed(2);
     }
 
+    function editar(id) {
+        $.ajax({
+            url: `paginas/${pag}/editar.php`,
+            method: 'POST',
+            data: { id },
+            dataType: 'json',
+            success: function(res) {
+                if (res.success) {
+                    $('#titulo_inserir').text('Editar Pedido');
+                    $('#id').val(res.data.id);
+                    $('#usuario_id').val(res.data.usuario_id);
+                    $('#status').val(res.data.status);
+                    $('#endereco_entrega').val(res.data.endereco_entrega);
+
+                    // Limpa itens antigos e adiciona os itens do pedido
+                    $('#pedido_itens').empty();
+                    itemIndex = 0;
+                    res.data.itens.forEach(item => {
+                        adicionarItem(item.produto_id, item.quantidade, item.preco);
+                    });
+                    
+                    $('#modalForm').modal('show');
+                } else {
+                    alert(res.message || 'Erro ao buscar dados do pedido.');
+                }
+            },
+            error: function() {
+                alert('Erro de comunicação com o servidor.');
+            }
+        });
+    }
+
     // Limpa o formulário ao fechar o modal
     $('#modalForm').on('hidden.bs.modal', function () {
         $('#form')[0].reset();
         $('#pedido_itens').empty();
         itemIndex = 0;
-        $('#mensagem').text('').removeClass('text-danger');
+        $('#id').val('');
+        $('#titulo_inserir').text('Novo Pedido');
     });
 </script>

@@ -1,55 +1,65 @@
 <?php
 require_once("../../../conexao.php");
 
+// Dados do utilizador
+$id = $_POST['id'] ?? '';
 $nome = $_POST['nome'] ?? '';
 $email = $_POST['email'] ?? '';
 $telefone = $_POST['telefone'] ?? '';
-$nivel = $_POST['nivel'] ?? '';
-$endereco = $_POST['endereco'] ?? '';
-$id = $_POST['id'] ?? '';
+$nivel = $_POST['nivel'] ?? 'user';
 
-// Validação básica para segurança
-if (empty($nome) || empty($email) || empty($nivel)) {
-    echo "Nome, email e nível são obrigatórios!";
+// Dados do endereço
+$endereco_id = $_POST['endereco_id'] ?? '';
+$cep = $_POST['cep'] ?? '';
+$rua = $_POST['rua'] ?? '';
+$numero = $_POST['numero'] ?? '';
+$complemento = $_POST['complemento'] ?? '';
+$bairro = $_POST['bairro'] ?? '';
+$cidade = $_POST['cidade'] ?? '';
+$estado = $_POST['estado'] ?? '';
+
+if (empty($nome) || empty($email)) {
+    echo "Nome e email são obrigatórios!";
     exit();
 }
 
-// Lógica para INSERIR um novo utilizador (criado pelo admin)
-if ($id == "") {
-    // Evita emails duplicados
-    $query = $pdo->prepare("SELECT * FROM usuarios WHERE email = :email");
-    $query->bindValue(":email", $email);
-    $query->execute();
-    if ($query->rowCount() > 0) {
-        echo "Email já registado!";
-        exit();
+try {
+    // Inicia uma transação
+    $pdo->beginTransaction();
+
+    // Passo 1: Inserir ou Atualizar o Endereço
+    // Apenas insere/atualiza se algum campo de endereço for preenchido
+    if (!empty($cep) || !empty($rua)) {
+        if (empty($endereco_id)) {
+            // Insere um novo endereço
+            $stmtEnd = $pdo->prepare("INSERT INTO endereco (cep, rua, numero, complemento, bairro, cidade, estado, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            $stmtEnd->execute([$cep, $rua, $numero, $complemento, $bairro, $cidade, $estado, $id]);
+            $endereco_id = $pdo->lastInsertId();
+        } else {
+            // Atualiza um endereço existente
+            $stmtEnd = $pdo->prepare("UPDATE endereco SET cep = ?, rua = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, estado = ? WHERE id = ?");
+            $stmtEnd->execute([$cep, $rua, $numero, $complemento, $bairro, $cidade, $estado, $endereco_id]);
+        }
     }
 
-    // [ALTERAÇÃO] Modificamos a query para incluir 'senha' e 'status'
-    $query = $pdo->prepare("INSERT INTO usuarios 
-        (nome, email, telefone, nivel, endereco, senha, status, ativo) VALUES 
-        (:nome, :email, :telefone, :nivel, :endereco, :senha, :status, 'Sim')");
+    // Passo 2: Inserir ou Atualizar o Utilizador
+    if (empty($id)) {
+        // Insere um novo utilizador, já associando o endereco_id (pode ser null)
+        $stmtUser = $pdo->prepare("INSERT INTO usuarios (nome, email, telefone, nivel, endereco_id, status) VALUES (?, ?, ?, ?, ?, 'pendente')");
+        $stmtUser->execute([$nome, $email, $telefone, $nivel, $endereco_id ?: null]);
+    } else {
+        // Atualiza um utilizador existente
+        $stmtUser = $pdo->prepare("UPDATE usuarios SET nome = ?, email = ?, telefone = ?, nivel = ?, endereco_id = ? WHERE id = ?");
+        $stmtUser->execute([$nome, $email, $telefone, $nivel, $endereco_id ?: null, $id]);
+    }
 
-    // [ALTERAÇÃO] Definimos a senha como NULL (vazia)
-    $query->bindValue(":senha", NULL, PDO::PARAM_NULL);
-    // [ALTERAÇÃO] Definimos o status como 'pendente'
-    $query->bindValue(":status", 'pendente');
+    // Se tudo correu bem, confirma as alterações
+    $pdo->commit();
+    echo "Salvo com Sucesso";
 
-} 
-// Lógica para ATUALIZAR um utilizador existente (não mexe na senha)
-else {
-    $query = $pdo->prepare("UPDATE usuarios SET nome = :nome, email = :email, telefone = :telefone, nivel = :nivel, endereco = :endereco WHERE id = :id");
-    $query->bindValue(":id", $id);
+} catch (Exception $e) {
+    // Se algo deu errado, desfaz tudo
+    $pdo->rollBack();
+    echo "Ocorreu um erro ao salvar: " . $e->getMessage();
 }
-
-// Binds comuns para INSERT e UPDATE
-$query->bindValue(":nome", $nome);
-$query->bindValue(":email", $email);
-$query->bindValue(":telefone", $telefone);
-$query->bindValue(":nivel", $nivel);
-$query->bindValue(":endereco", $endereco);
-
-$query->execute();
-
-echo "Salvo com Sucesso";
 ?>

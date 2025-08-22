@@ -170,7 +170,7 @@ if($linhas > 0){
 									<i class="fa fa-angle-left pull-right"></i>
 								</a>
 								<ul class="treeview-menu">
-									<li><a href="index.php?pagina=pedidos_admin"><i class="fa fa-angle-right"></i> Pedidos</a></li>
+									<li><a href="index.php?pagina=pedidos"><i class="fa fa-angle-right"></i> Pedidos</a></li>
 									
 								</ul>
 					</div>

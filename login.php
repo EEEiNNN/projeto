@@ -8,8 +8,8 @@ try {
         $senha_hash = password_hash('123', PASSWORD_DEFAULT);
         // Garante que o status seja 'ativo' para o admin inicial
         $stmt = $pdo->prepare(
-            "INSERT INTO usuarios (nome, email, senha, nivel, ativo, status, foto) 
-             VALUES ('Administrador', 'admin@admin.com', ?, 'admin', 'Sim', 'ativo', 'sem-foto.jpg')"
+            "INSERT INTO usuarios (nome, email, senha, nivel, ativo, status) 
+             VALUES ('Administrador', 'admin@admin.com', ?, 'admin', 'Sim', 'ativo')"
         );
         $stmt->execute([$senha_hash]);
     }
@@ -91,7 +91,7 @@ try {
                         <input type="password" name="senha" required>
                         <span>Crie uma Senha (mín. 6 caracteres)</span><i></i>
                     </div>
-                    <input type="submit" value="Finalizar Cadastro" style="padding: 9px;">
+                    <input type="submit" value="Finalizar Cadastro" style="padding: 9px; width: auto;">
                 </div>
             </form>
         </div>

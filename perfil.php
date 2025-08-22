@@ -1,22 +1,25 @@
 <?php
-// Inclui o header, que já inicia a sessão e a conexão
 include 'header.php';
 
-// Segurança: Garante que apenas utilizadores logados acedam a esta página
 if (!isLoggedIn()) {
     header('Location: login.php');
     exit;
 }
 
-// Busca os dados atuais do utilizador na base de dados
 $user_id = $_SESSION['id'];
-$stmt = $pdo->prepare("SELECT nome, email, endereco, telefone FROM usuarios WHERE id = ?");
+// Query atualizada para buscar o endereço com JOIN
+$stmt = $pdo->prepare("
+    SELECT u.nome, u.email, u.telefone, 
+           e.id as endereco_id, e.cep, e.rua, e.numero, e.complemento, e.bairro, e.cidade, e.estado
+    FROM usuarios u
+    LEFT JOIN endereco e ON u.endereco_id = e.id
+    WHERE u.id = ?
+");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Pega mensagens de feedback da sessão (se existirem)
 $feedback = $_SESSION['feedback'] ?? null;
-unset($_SESSION['feedback']); // Limpa a mensagem após lê-la
+unset($_SESSION['feedback']);
 ?>
 
 <title>Meu Perfil | Ben-David</title>
@@ -35,6 +38,7 @@ unset($_SESSION['feedback']); // Limpa a mensagem após lê-la
 
             <form action="atualizar_perfil.php" method="POST" class="profile-form">
                 <input type="hidden" name="action" value="update_details">
+                <input type="hidden" name="endereco_id" value="<?php echo $user['endereco_id'] ?? ''; ?>">
                 <h2>Dados Pessoais</h2>
                 <div class="form-grid">
                     <div class="form-group">
@@ -45,42 +49,46 @@ unset($_SESSION['feedback']); // Limpa a mensagem após lê-la
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user['email']); ?>" readonly>
                     </div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="telefone">Telefone</label>
+                    <input type="text" id="telefone" name="telefone" value="<?php echo htmlspecialchars($user['telefone'] ?? ''); ?>">
+                </div>
+
+                <h2 style="margin-top: 2rem;">Meu Endereço</h2>
+                <div class="form-grid">
                     <div class="form-group">
-                        <label for="telefone">Telefone</label>
-                        <input type="text" id="telefone" name="telefone" value="<?php echo htmlspecialchars($user['telefone'] ?? ''); ?>">
+                        <label for="cep">CEP</label>
+                        <input type="text" id="cep" name="cep" value="<?php echo htmlspecialchars($user['cep'] ?? ''); ?>">
                     </div>
-                    <div class="form-group full-width">
-                        <label for="endereco">Endereço</label>
-                        <input type="text" id="endereco" name="endereco" value="<?php echo htmlspecialchars($user['endereco'] ?? ''); ?>">
+                     <div class="form-group">
+                        <label for="rua">Rua</label>
+                        <input type="text" id="rua" name="rua" value="<?php echo htmlspecialchars($user['rua'] ?? ''); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="numero">Número</label>
+                        <input type="text" id="numero" name="numero" value="<?php echo htmlspecialchars($user['numero'] ?? ''); ?>">
+                    </div>
+                     <div class="form-group">
+                        <label for="bairro">Bairro</label>
+                        <input type="text" id="bairro" name="bairro" value="<?php echo htmlspecialchars($user['bairro'] ?? ''); ?>">
+                    </div>
+                    <div class="form-group">
+                        <label for="cidade">Cidade</label>
+                        <input type="text" id="cidade" name="cidade" value="<?php echo htmlspecialchars($user['cidade'] ?? ''); ?>">
+                    </div>
+                     <div class="form-group">
+                        <label for="estado">Estado</label>
+                        <input type="text" id="estado" name="estado" maxlength="2" value="<?php echo htmlspecialchars($user['estado'] ?? ''); ?>">
                     </div>
                 </div>
                 <button type="submit" class="btn-submit">Salvar Alterações</button>
             </form>
 
             <form action="atualizar_perfil.php" method="POST" class="profile-form">
-                <input type="hidden" name="action" value="change_password">
-                <h2>Alterar Senha</h2>
-                <div class="form-grid">
-                    <div class="form-group full-width">
-                        <label for="senha_atual">Senha Atual</label>
-                        <input type="password" id="senha_atual" name="senha_atual" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="nova_senha">Nova Senha</label>
-                        <input type="password" id="nova_senha" name="nova_senha" minlength="6" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="confirma_senha">Confirmar Nova Senha</label>
-                        <input type="password" id="confirma_senha" name="confirma_senha" required>
-                    </div>
-                </div>
-                <button type="submit" class="btn-submit">Alterar Senha</button>
-            </form>
+                </form>
         </div>
     </section>
 </main>
 
-<?php
-// Inclui o rodapé, que fecha o documento HTML e carrega os scripts globais
-include 'footer.php';
-?>
+<?php include 'footer.php'; ?>

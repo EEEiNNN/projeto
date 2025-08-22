@@ -57,7 +57,7 @@ function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
         <h1>NOVA COLEÇÃO</h1>
         <!-- se desejar, você pode puxar uma imagem de destaque aqui também -->
         <img src="" alt="">
-        <a href="http://localhost/php/projeto_integrador/projeto2/produtos.php"><button>Ver mais</button></a>
+        <a href="produtos.php"><button>Ver mais</button></a>
       </div>
     </section>
 
