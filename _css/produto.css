@@ -9,24 +9,8 @@
   --footer-icon-color: #A1CCA5;
 }
 
-@font-face {
-  font-family: "Boulder";
-  src: url("../fonts/Boulder.woff2") format("woff2"),
-       url("../fonts/Boulder.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "Futura";
-  src: url("../fonts/FuturaMedium.woff2") format("woff2"),
-       url("../fonts/FuturaMedium.woff") format("woff");
-  font-weight: normal;
-  font-style: normal;
-}
-
 body {
-  font-family: "Futura Std", "Futura", sans-serif;
+  font-family: "Futura Std", sans-serif;
   margin: 0;
   background-color: #fdf9f9;
 }

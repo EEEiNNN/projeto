@@ -1,20 +1,20 @@
 <?php
 require_once("conexao.php");
 
-// Lógica para criar o usuário administrador padrão.
-// Isso só será executado se a tabela de usuários estiver vazia.
+// Lógica para criar o utilizador administrador padrão (se a tabela estiver vazia)
 try {
     $query = $pdo->query("SELECT id FROM usuarios LIMIT 1");
     if ($query->rowCount() == 0) {
         $senha_hash = password_hash('123', PASSWORD_DEFAULT);
-        $pdo->prepare(
-            "INSERT INTO usuarios (nome, email, senha, endereco, nivel, ativo) 
-             VALUES ('Administrador', 'admin@admin.com', ?, 'Endereço Padrão', 'admin', 'Sim')"
-        )->execute([$senha_hash]);
+        // Garante que o status seja 'ativo' para o admin inicial
+        $stmt = $pdo->prepare(
+            "INSERT INTO usuarios (nome, email, senha, nivel, ativo, status, foto) 
+             VALUES ('Administrador', 'admin@admin.com', ?, 'admin', 'Sim', 'ativo', 'sem-foto.jpg')"
+        );
+        $stmt->execute([$senha_hash]);
     }
 } catch (PDOException $e) {
-    // Se a tabela ainda não existir, ignora o erro por enquanto.
-    // O ideal seria ter um script de instalação separado.
+    die("Erro ao inicializar a base de dados: " . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
@@ -26,26 +26,25 @@ try {
     <link rel="stylesheet" href="_css/login.css">
     <link rel="shortcut icon" type="image/x-icon" href="_img/icone.svg">
     <style>
-        /* Estilos adicionais para a troca de abas */
         .form-container { display: none; }
         .form-container.active { display: block; }
-        .tab-buttons { text-align: center; margin-bottom: 20px; }
+        .tab-buttons { text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.2); }
         .tab-button {
-            background: none; border: none; color: #8f8f8f;
-            font-size: 18px; padding: 10px 15px; cursor: pointer;
-            font-weight: 500; transition: 0.3s;
+            background: none; border: none; color: #8f8f8f; font-size: 18px;
+            padding: 10px 15px; cursor: pointer; font-weight: 500; transition: 0.3s;
+            border-bottom: 3px solid transparent;
         }
-        .tab-button.active { color: #fff; border-bottom: 2px solid #45f3ff; }
+        .tab-button.active { color: #fff; border-bottom-color: #A1CCA5; }
         .feedback-message { 
             text-align: center; margin-top: 15px; padding: 10px; border-radius: 5px;
-            font-size: 0.9em; display: none;
+            font-size: 0.9em; display: none; color: white;
         }
-        .feedback-message.success { background-color: #28a745; color: white; }
-        .feedback-message.error { background-color: #dc3545; color: white; }
+        .feedback-message.success { background-color: #28a745; }
+        .feedback-message.error { background-color: #dc3545; }
     </style>
 </head>
 <body>
-    <div class="box" style="height: auto; min-height: 450px;">
+    <div class="box" style="height: auto; min-height: 520px;">
         <div class="figura"><a href="index.php">B</a></div>
         <span class="borderLine"></span>
         
@@ -54,40 +53,46 @@ try {
             <button class="tab-button" data-form="register">Cadastrar</button>
         </div>
 
-        <div id="login-form" class="form-container active">
-            <form id="form-login">
+        <div id="login-container" class="form-container active">
+            <form id="form-login" method="POST">
                 <input type="hidden" name="action" value="login">
-                <div class="inputBox">
-                    <input type="email" name="email" required="required">
-                    <span>Email</span><i></i>
-                </div>
-                <div class="inputBox">
-                    <input type="password" name="senha" required="required">
-                    <span>Senha</span><i></i>
-                </div>
-                <div class="links">
-                    <a href="#">Esqueci a senha</a>
-                </div>
-                <input type="submit" value="Login">
-            </form>
-        </div>
-
-        <div id="register-form" class="form-container">
-            <form id="form-register">
-                <input type="hidden" name="action" value="register">
-                <div class="inputBox">
-                    <input type="text" name="usuario" required>
-                    <span>Nome</span><i></i>
-                </div>
                 <div class="inputBox">
                     <input type="email" name="email" required>
                     <span>Email</span><i></i>
                 </div>
                 <div class="inputBox">
                     <input type="password" name="senha" required>
-                    <span>Senha (mín. 6 caracteres)</span><i></i>
+                    <span>Senha</span><i></i>
                 </div>
-                <input type="submit" value="Cadastrar">
+                <div class="links"><a href="#">Esqueci a senha</a></div>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+
+        <div id="register-container" class="form-container">
+            <form id="form-register" method="POST">
+                <div id="register-step1">
+                    <p style="color:#fff; font-size: 0.9em; text-align: center; margin-bottom: 20px;">
+                        Insira o seu email para começar o registo.
+                    </p>
+                    <div class="inputBox">
+                        <input type="email" name="email" required>
+                        <span>Email</span><i></i>
+                    </div>
+                    <input type="submit" value="Continuar" style="padding: 9px;">
+                </div>
+
+                <div id="register-step2" style="display: none;">
+                    <div class="inputBox" id="nome-wrapper">
+                        <input type="text" name="nome" required>
+                        <span>Nome Completo</span><i></i>
+                    </div>
+                    <div class="inputBox">
+                        <input type="password" name="senha" required>
+                        <span>Crie uma Senha (mín. 6 caracteres)</span><i></i>
+                    </div>
+                    <input type="submit" value="Finalizar Cadastro" style="padding: 9px;">
+                </div>
             </form>
         </div>
         
@@ -96,95 +101,130 @@ try {
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    // --- ELEMENTOS DA PÁGINA ---
     const tabButtons = document.querySelectorAll('.tab-button');
     const formContainers = document.querySelectorAll('.form-container');
     const feedbackDiv = document.getElementById('feedback');
     const formLogin = document.getElementById('form-login');
     const formRegister = document.getElementById('form-register');
+    const registerStep1 = document.getElementById('register-step1');
+    const registerStep2 = document.getElementById('register-step2');
+    const emailInputRegister = registerStep1.querySelector('input[name="email"]');
+    const nomeWrapper = document.getElementById('nome-wrapper');
 
-    // Lógica para alternar entre abas de login e cadastro
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const formId = button.dataset.form;
+    let registerAction = 'check_email'; // Ação inicial do formulário de registo
 
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            formContainers.forEach(container => {
-                container.classList.remove('active');
-                if (container.id === `${formId}-form`) {
-                    container.classList.add('active');
+    // --- FUNÇÃO PARA GERIR CAMPOS OBRIGATÓRIOS (CORRIGE O ERRO "NOT FOCUSABLE") ---
+    const manageRequiredAttributes = (activeContainerId) => {
+        formContainers.forEach(container => {
+            const isContainerActive = container.id === activeContainerId;
+            container.querySelectorAll('input[name]').forEach(input => {
+                // Adiciona ou remove 'required' com base na visibilidade do formulário pai
+                if (isContainerActive && input.offsetParent !== null) {
+                    input.setAttribute('required', 'required');
+                } else {
+                    input.removeAttribute('required');
                 }
             });
-            feedbackDiv.style.display = 'none'; // Esconde mensagens ao trocar de aba
+        });
+    };
+
+    // --- LÓGICA PARA ALTERNAR ENTRE ABAS ---
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const formContainerId = button.dataset.form + '-container';
+            
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            formContainers.forEach(c => c.classList.remove('active'));
+            
+            button.classList.add('active');
+            document.getElementById(formContainerId).classList.add('active');
+            
+            feedbackDiv.style.display = 'none';
+            manageRequiredAttributes(formContainerId); // Atualiza os campos obrigatórios
         });
     });
 
-    // Função para exibir mensagens de feedback
-    const showFeedback = (message, isSuccess) => {
-        feedbackDiv.textContent = message;
-        feedbackDiv.className = 'feedback-message'; // Reseta as classes
-        feedbackDiv.classList.add(isSuccess ? 'success' : 'error');
-        feedbackDiv.style.display = 'block';
-    };
-
-    // Lógica para enviar o formulário de login via AJAX
+    // --- LÓGICA DE SUBMISSÃO PARA O FORMULÁRIO DE LOGIN (SIMPLES) ---
     formLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
-        const formData = new FormData(formLogin);
         const submitButton = formLogin.querySelector('input[type="submit"]');
+        const originalButtonText = submitButton.value;
+        submitButton.disabled = true;
+        submitButton.value = 'Aguarde...';
+        
+        try {
+            const formData = new FormData(formLogin);
+            const response = await fetch('autenticar.php', { method: 'POST', body: formData });
+            const data = await response.json();
+
+            if (data.success && data.redirect) {
+                showFeedback(data.message, true);
+                setTimeout(() => { window.location.href = data.redirect; }, 1000);
+            } else {
+                showFeedback(data.message || 'Ocorreu um erro.', false);
+            }
+        } catch (error) {
+            showFeedback('Erro de comunicação com o servidor.', false);
+        } finally {
+            submitButton.disabled = false;
+            submitButton.value = originalButtonText;
+        }
+    });
+
+    // --- LÓGICA DE SUBMISSÃO PARA O FORMULÁRIO DE CADASTRO (MULTI-ETAPAS) ---
+    formRegister.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const submitButton = e.currentTarget.querySelector('input[type="submit"]:not([style*="display: none"])');
+        const originalButtonText = submitButton.value;
         submitButton.disabled = true;
         submitButton.value = 'Aguarde...';
 
+        const formData = new FormData(formRegister);
+        formData.append('action', registerAction); // Envia a ação correta!
+
         try {
-            const response = await fetch('autenticar.php', {
-                method: 'POST',
-                body: formData
-            });
+            const response = await fetch('autenticar.php', { method: 'POST', body: formData });
             const data = await response.json();
 
             if (data.success) {
-                showFeedback(data.message, true);
-                window.location.href = data.redirect;
+                if (registerAction === 'check_email') {
+                    // Avança para a etapa 2
+                    registerStep1.style.display = 'none';
+                    registerStep2.style.display = 'block';
+                    emailInputRegister.readOnly = true;
+
+                    if (data.status === 'pending') { // Utilizador pré-registado
+                        nomeWrapper.style.display = 'none';
+                        registerAction = 'set_password';
+                    } else { // Novo utilizador
+                        registerAction = 'register';
+                    }
+                    manageRequiredAttributes('register-container'); // Reavalia os campos obrigatórios
+                } else { // Sucesso no registo final
+                    showFeedback(data.message + ' Redirecionando...', true);
+                    setTimeout(() => { window.location.href = 'login.php'; }, 2000);
+                }
             } else {
                 showFeedback(data.message, false);
             }
         } catch (error) {
-            showFeedback('Erro de conexão. Verifique sua internet.', false);
+            showFeedback('Erro de comunicação com o servidor.', false);
         } finally {
             submitButton.disabled = false;
-            submitButton.value = 'Login';
+            submitButton.value = originalButtonText;
         }
     });
 
-    // Lógica para enviar o formulário de cadastro via AJAX
-    formRegister.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(formRegister);
-        const submitButton = formRegister.querySelector('input[type="submit"]');
-        submitButton.disabled = true;
-        submitButton.value = 'Enviando...';
+    // Funções de feedback
+    const showFeedback = (message, isSuccess) => {
+        feedbackDiv.textContent = message;
+        feedbackDiv.className = `feedback-message ${isSuccess ? 'success' : 'error'}`;
+        feedbackDiv.style.display = 'block';
+    };
 
-        try {
-            const response = await fetch('autenticar.php', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await response.json();
-
-            showFeedback(data.message, data.success);
-            if (data.success) {
-                formRegister.reset();
-                // Opcional: Mudar para a aba de login após o sucesso
-                document.querySelector('.tab-button[data-form="login"]').click();
-            }
-        } catch (error) {
-            showFeedback('Erro de conexão. Verifique sua internet.', false);
-        } finally {
-            submitButton.disabled = false;
-            submitButton.value = 'Cadastrar';
-        }
-    });
+    // Inicializa os atributos 'required' na aba correta
+    manageRequiredAttributes('login-container');
 });
 </script>
 </body>

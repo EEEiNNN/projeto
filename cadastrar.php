@@ -10,18 +10,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
         $check = $pdo->prepare("SELECT COUNT(*) FROM usuarios WHERE email = :email");
-        $check->execute([':email' => $email]);
+        $check->execute([':email' => $email], [':nivel' => '$nivel']);
         $exists = $check->fetchColumn();
 
         if ($exists > 0) {
             echo "<script>alert('Este e-mail já está cadastrado!');</script>";
         } else {
             $query = $pdo->prepare("INSERT INTO usuarios (nome, email, senha, endereco, nivel, ativo) 
-                VALUES (:nome, :email, :senha, NULL, 'user', 'Sim')");
+                VALUES (:nome, :email, :senha, NULL, :nivel, 'Sim')");
             $query->execute([
                 ':nome' => $nome,
                 ':email' => $email,
-                ':senha' => $senha_hash
+                ':senha' => $senha_hash,
+                ':nivel' => $nivel
             ]);
             echo "<script>alert('Cadastro realizado com sucesso!'); window.location.href='login.php';</script>";
         }

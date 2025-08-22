@@ -1,3 +1,6 @@
+@import url('https://fonts.cdnfonts.com/css/futura-std-4');
+
+
 :root {
   --footer-bg: #37222d;
   --footer-text: #eee;
@@ -7,8 +10,24 @@
   --footer-icon-color: #A1CCA5;
 }
 
+@font-face {
+  font-family: "Boulder";
+  src: url("../fonts/Boulder.woff2") format("woff2"),
+       url("../fonts/Boulder.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Futura";
+  src: url("../fonts/FuturaMedium.woff2") format("woff2"),
+       url("../fonts/FuturaMedium.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
-  font-family: "Futura Std", "Futura", sans-serif;
+  font-family: "Futura Std", sans-serif;
   margin: 30px;
 }
 
@@ -112,7 +131,7 @@ body {
   font-family: sans-serif;
   font-size: 1rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  opacity: 1;
+  opacity: 1; 
   transition: opacity 0.3s ease, transform 0.3s ease;
   transform: translateX(0);
 }

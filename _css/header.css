@@ -11,19 +11,28 @@
   box-sizing: border-box;
 }
 
-html, body {
+html {
   height: 100%;
-  margin: 0;
+}
+
+body {
   display: flex;
   flex-direction: column;
+  min-height: 100vh; /* Usa vh para se basear na altura da janela */
+  padding-top: 120px; /* Compensa a altura do header fixo */
 }
 
 main {
-  flex: 1;
+  flex: 1 0 auto; /* Faz o conteúdo principal crescer e empurrar o footer */
+}
+
+.footer { /* Certifique-se que o seu footer tem esta classe */
+  flex-shrink: 0; /* Impede o footer de encolher */
 }
 
 header {
   position: fixed;
+  font-family: "Futura Std", sans-serif;
   top: 0;
   left: 0;
   width: 100%;
@@ -55,12 +64,6 @@ header {
   list-style: none;
 }
 
-.nav ul li {
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
 .nav ul li a {
   text-decoration: none;
   font-weight: bold;
@@ -68,36 +71,6 @@ header {
 
 .dropdown-menu.show {
   background-color: var(--brown);
-
-}
-
-.actions-wrapper {
-  position: absolute;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 11;
-}
-
-.actions-wrapper ul {
-  list-style: none;
-  display: flex;
-  gap: 15px;
-  margin: 0;
-  padding: 0;
-}
-
-a.dropdown-toggle::after {
-  display: none !important;
-}
-
-.actions-wrapper a {
-  color: inherit;
-}
-
-.icon-button img {
-  width: 24px;
-  height: 24px;
 }
 
 .logo {
@@ -117,25 +90,38 @@ a.dropdown-toggle::after {
 .logo h1 {
   font-size: 2.5rem;
   color: var(--green);
-  text-align: left;
   font-family: 'Animoto', sans-serif;
 }
 
 .actions-wrapper {
   position: absolute;
   right: 40px;
-  display: flex;
-  gap: 20px;
-  align-items: center;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 11;
 }
 
-.icon-button img {
-  width: 28px;
-  height: 28px;
+.actions-wrapper ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+  margin: 0;
+  padding: 0;
+}
+
+.actions-wrapper a {
+  color: inherit;
+}
+
+a.dropdown-toggle::after {
+  display: none !important;
+}
+
+.icon-button svg {
   transition: transform 0.2s ease;
   cursor: pointer;
 }
 
-.icon-button img:hover {
+.icon-button:hover svg {
   transform: scale(1.1);
 }

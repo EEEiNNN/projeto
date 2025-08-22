@@ -1,5 +1,5 @@
 <?php
-require_once 'conexao.php';
+include 'header.php';
 
 // Verificar se usuário está logado
 if (!isLoggedIn()) {
@@ -149,5 +149,4 @@ function getStatusIcon($status) {
 
     <script src="js/main.js"></script>
     <script src="js/pedidos.js"></script>
-</body>
-</html>
+<?php include 'footer.php'; ?>

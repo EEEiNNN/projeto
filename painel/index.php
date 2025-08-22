@@ -21,7 +21,6 @@ if($linhas > 0){
     $telefone_usuario = $res[0]['telefone'];
     $senha_usuario = $res[0]['senha'];
     $nivel_usuario = $res[0]['nivel'];
-    $foto_usuario = $res[0]['foto'];
     $endereco_usuario = $res[0]['endereco'];
 }
 

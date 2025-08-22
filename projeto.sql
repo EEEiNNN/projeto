@@ -182,7 +182,8 @@ CREATE TABLE `usuarios` (
   `telefone` varchar(15) DEFAULT NULL,
   `endereco` text DEFAULT NULL,
   `nivel` enum('admin','user') DEFAULT 'user',
-  `senha` varchar(255) NOT NULL,
+  `senha` varchar(255) NULL,
+  `status` ENUM('ativo','pendente','inativo') NOT NULL DEFAULT 'ativo',
   `ativo` enum('Sim','Não') DEFAULT 'Sim',
   `data` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

@@ -1,5 +1,6 @@
 /* ---------- FONTES E VARIÁVEIS GLOBAIS ---------- */
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap");
+@import url('https://fonts.cdnfonts.com/css/futura-std-4');
 
 :root {
   --primary-color: #709775; /* Um azul escuro sóbrio */
@@ -24,6 +25,7 @@ body {
   font-family: "Poppins", sans-serif;
   background-color: var(--extra-light);
   color: var(--text-dark);
+  margin: 60px;
 }
 
 a {

@@ -1,4 +1,5 @@
 @import url('https://fonts.cdnfonts.com/css/ncl-kemgor');
+@import url('https://fonts.cdnfonts.com/css/futura-std-4');
 
 :root {
   --footer-bg: #251B18;
@@ -7,19 +8,19 @@
   --footer-link-hover: #fff;
   --footer-accent: #A1CCA5;
   --footer-icon-color: #A1CCA5;
+  --dark-green: #709775;
 }
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
 }
 
 /* BANNER ESTILIZADO */
 .banner {
   background: 
-    linear-gradient(to right, #709775, #A1CCA5),
+    repeating-linear-gradient(to top, #251B18, #A1CCA5 10%, #251B18 20%),
     url('../img/banner-bg.jpg') no-repeat center center/cover;
   height: 100vh;
   display: flex;

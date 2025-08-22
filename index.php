@@ -1,6 +1,5 @@
-<?php include 'header.php'; ?>
 <?php 
-require_once 'conexao.php';
+include 'header.php';
 function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
 {
     $sql = "
@@ -30,6 +29,8 @@ function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
     // Fallback caso não exista produto/imagem para a categoria
     return "_images/sem-imagem.jpg";
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -56,7 +57,7 @@ function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
         <h1>NOVA COLEÇÃO</h1>
         <!-- se desejar, você pode puxar uma imagem de destaque aqui também -->
         <img src="" alt="">
-        <button>Ver mais</button>
+        <a href="http://localhost/php/projeto_integrador/projeto2/produtos.php"><button>Ver mais</button></a>
       </div>
     </section>
 
@@ -118,16 +119,5 @@ function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
       </div>
     </div>
   </main>
-
-  <?php include 'footer.php'; ?>
-
-  <!-- JS do projeto -->
-  <script src="_js/script.js"></script>
-
-  <!-- Bootstrap Bundle (Popper incluído) -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
-    crossorigin="anonymous"
-  ></script>
-</body>
-</html>
+ <script src="_js/script.js"></script>
+<?php include 'footer.php'; ?>

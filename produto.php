@@ -1,5 +1,5 @@
 <?php
-include 'conexao.php';
+include 'header.php';
 require_once 'models/Produto.php';
 
 // Recupera o ID da URL
@@ -17,13 +17,19 @@ $produto = $produtoModel->findById($id);
 
 // Se não encontrar o produto
 if (!$produto) {
-    include 'header.php';
-    echo "<div class='container'><h1>Produto não encontrado.</h1></div>";
-    include 'footer.php';
+    echo "<div class='container' style='max-width: 1200px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  display: flex;
+  gap: 400px;
+  padding: 400px;'><h1>Produto não encontrado.</h1></div>";
     exit;
 }
 
-include 'header.php';
+
 ?>
 
 <!DOCTYPE html>
@@ -59,11 +65,6 @@ include 'header.php';
       </div>
     </div>
   </div>
+<script src="js/shop_events.js"></script>
+<?php include 'footer.php'; ?>
 
-  <?php include 'footer.php'; ?>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" 
-          integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" 
-          crossorigin="anonymous"></script>
-  <script src="js/shop_events.js"></script>
-</body>
-</html>

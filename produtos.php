@@ -1,5 +1,4 @@
 <?php include 'header.php'; ?>
-<?php include 'conexao.php'; ?>
 <?php include 'models/Produto.php'; ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -51,10 +50,7 @@
     </div>
   </section>
 </main>
-
-<?php include 'footer.php'; ?>
 <script src="_js/script.js"></script>
 <script src="js/shop_events.js"></script> 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<?php include 'footer.php'; ?>
+
