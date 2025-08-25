@@ -73,7 +73,7 @@ try {
             <form id="form-register" method="POST">
                 <div id="register-step1">
                     <p style="color:#fff; font-size: 0.9em; text-align: center; margin-bottom: 20px;">
-                        Insira o seu email para começar o registo.
+                        Insira o seu email para começar o registro.
                     </p>
                     <div class="inputBox">
                         <input type="email" name="email" required>

@@ -38,8 +38,8 @@
 						<div class="col-md-6">							
 							<label>Nível</label>
 							<select class="form-control" id="nivel" name="nivel">
-                                <option value="user">Utilizador</option>
-                                <option value="admin">Administrador</option>
+                                <option value="user">user</option>
+                                <option value="admin">admin</option>
                             </select>
 						</div>	
 					</div>
@@ -103,7 +103,7 @@
     // Função de editar atualizada para receber todos os novos campos de endereço
     function editar(id, nome, email, telefone, nivel, cep, rua, numero, complemento, bairro, cidade, estado, endereco_id){
         $('#mensagem').text('');
-        $('#titulo_inserir').text('Editar Registo');
+        $('#titulo_inserir').text('Editar Registro');
 
         $('#id').val(id);
         $('#nome').val(nome);
@@ -122,5 +122,29 @@
         $('#endereco_id').val(endereco_id);
 
         $('#modalForm').modal('show');
+    }
+
+    function mostrar(nome, email, telefone, nivel, ativo, data, cep, rua, numero, bairro, cidade, estado){
+        $('#titulo_dados').text(nome);
+        
+        var corpo_html = `
+            <div class="row">
+                <div class="col-md-6 mb-2"><span><b>Email: </b></span><span>${email}</span></div>
+                <div class="col-md-6 mb-2"><span><b>Telefone: </b></span><span>${telefone}</span></div>
+                <div class="col-md-6 mb-2"><span><b>Nível: </b></span><span>${nivel}</span></div>
+                <div class="col-md-6 mb-2"><span><b>Ativo: </b></span><span>${ativo}</span></div>
+                <div class="col-md-6 mb-2"><span><b>Data Cadastro: </b></span><span>${data}</span></div>
+            </div>
+            <hr>
+            <h5>Endereço</h5>
+            <div class="row">
+                <div class="col-md-12"><span>${rua}, ${numero} - ${bairro}</span></div>
+                <div class="col-md-12"><span>${cidade} / ${estado}</span></div>
+                <div class="col-md-12"><span>CEP: ${cep}</span></div>
+            </div>
+        `;
+
+        $('#corpo_dados').html(corpo_html);
+        $('#modalDados').modal('show');
     }
 </script>

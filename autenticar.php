@@ -71,7 +71,7 @@ switch ($action) {
 
             if ($user) {
                 if ($user['status'] === 'ativo') {
-                    $response['message'] = 'Este email já está registado. Por favor, faça o login.';
+                    $response['message'] = 'Este email já está registrado. Por favor, faça o login.';
                 } else if ($user['status'] === 'pendente') {
                     $response['success'] = true;
                     $response['status'] = 'pending';
@@ -109,7 +109,7 @@ switch ($action) {
             );
             if ($stmt->execute([$nome, $email, $senha_hash])) {
                 $response['success'] = true;
-                $response['message'] = 'Registo realizado com sucesso!';
+                $response['message'] = 'Registro realizado com sucesso!';
             }
         } catch (PDOException $e) {
             $response['message'] = 'Erro ao criar conta.';

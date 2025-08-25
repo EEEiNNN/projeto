@@ -34,7 +34,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="js/main.js"></script> 
+<script src="_js/script.js"></script>
 
 </body>
 </html>

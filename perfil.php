@@ -90,5 +90,5 @@ unset($_SESSION['feedback']);
         </div>
     </section>
 </main>
-
+<script src="_js/getCEP.js"></script>
 <?php include 'footer.php'; ?>

@@ -179,7 +179,6 @@ img {
 
 /* CONTEÚDO DO CARRINHO (ITENS + RESUMO) */
 .carrinho-content {
-  display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
   align-items: flex-start;

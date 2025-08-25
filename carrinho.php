@@ -1,11 +1,11 @@
 <?php
-// [CORREÇÃO] Iniciar a sessão de forma segura no topo do ficheiro
+// Inicia a sessão de forma segura no topo do ficheiro
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-include 'header.php';
+require_once 'conexao.php';
 
-// Verificar se o utilizador está logado usando a função agora definida
+// Assumindo que a função isLoggedIn() está definida em conexao.php
 if (!isLoggedIn()) {
     header('Location: login.php');
     exit;
@@ -13,7 +13,8 @@ if (!isLoggedIn()) {
 
 $user_id = $_SESSION['id'];
 
-// Garante que o utilizador tenha um carrinho principal
+// --- LÓGICA PARA GARANTIR QUE O CARRINHO EXISTA ---
+// Esta lógica é executada sempre que a página é carregada.
 $stmt = $pdo->prepare("SELECT id FROM carrinho WHERE usuario_id = ?");
 $stmt->execute([$user_id]);
 $carrinho = $stmt->fetch();
@@ -21,63 +22,110 @@ $carrinho = $stmt->fetch();
 if ($carrinho) {
     $carrinho_id = $carrinho['id'];
 } else {
-    // Se não houver carrinho, cria um novo.
+    // Se o utilizador não tiver um carrinho, cria um novo.
     $stmt = $pdo->prepare("INSERT INTO carrinho (usuario_id, data_criacao) VALUES (?, NOW())");
     $stmt->execute([$user_id]);
     $carrinho_id = $pdo->lastInsertId();
 }
+// ---------------------------------------------------
 
-// Processar ações do carrinho (AJAX)
-// A sua lógica aqui já estava muito boa! Nenhuma alteração foi necessária.
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $response = [];
+// Processa as ações do carrinho (AJAX)
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
+    $response = ['success' => false, 'message' => 'Ocorreu um erro.'];
+    
+    switch ($_POST['action']) {
+        case 'adicionar':
+            $produto_id = (int)($_POST['produto_id'] ?? 0);
+            $quantidade = (int)($_POST['quantidade'] ?? 1);
 
-    if (isset($_POST['action'])) {
-        switch ($_POST['action']) {
-            case 'adicionar':
-                $produto_id = (int)$_POST['produto_id'];
-                $quantidade = (int)($_POST['quantidade'] ?? 1);
+            try {
+                $stmt = $pdo->prepare("SELECT estoque FROM produto WHERE id = ? AND estoque >= ?");
+                $stmt->execute([$produto_id, $quantidade]);
+                $produto = $stmt->fetch();
 
-                try {
-                    $stmt = $pdo->prepare("SELECT * FROM produto WHERE id = ? AND estoque >= ?");
-                    $stmt->execute([$produto_id, $quantidade]);
-                    $produto = $stmt->fetch();
+                if (!$produto) {
+                    $response['message'] = 'Produto não encontrado ou sem stock suficiente';
+                } else {
+                    $stmtItem = $pdo->prepare("SELECT quantidade FROM itemcarrinho WHERE carrinho_id = ? AND produto_id = ?");
+                    $stmtItem->execute([$carrinho_id, $produto_id]);
+                    $item_existente = $stmtItem->fetch();
 
-                    if (!$produto) {
-                        $response['success'] = false;
-                        $response['message'] = 'Produto não encontrado ou sem stock suficiente';
-                    } else {
-                        $stmt = $pdo->prepare("SELECT * FROM itemcarrinho WHERE carrinho_id = ? AND produto_id = ?");
-                        $stmt->execute([$carrinho_id, $produto_id]);
-                        $item_carrinho = $stmt->fetch();
-
-                        if ($item_carrinho) {
-                            $nova_quantidade = $item_carrinho['quantidade'] + $quantidade;
-                            if ($nova_quantidade > $produto['estoque']) {
-                                $response['success'] = false;
-                                $response['message'] = 'Stock insuficiente';
-                            } else {
-                                $stmt = $pdo->prepare("UPDATE itemcarrinho SET quantidade = ? WHERE carrinho_id = ? AND produto_id = ?");
-                                $stmt->execute([$nova_quantidade, $carrinho_id, $produto_id]);
-                                $response['success'] = true;
-                                $response['message'] = 'Quantidade atualizada no carrinho';
-                            }
+                    if ($item_existente) {
+                        $nova_quantidade = $item_existente['quantidade'] + $quantidade;
+                        if ($nova_quantidade > $produto['estoque']) {
+                            $response['message'] = 'Stock insuficiente';
                         } else {
-                            $stmt = $pdo->prepare("INSERT INTO itemcarrinho (carrinho_id, produto_id, quantidade) VALUES (?, ?, ?)");
-                            $stmt->execute([$carrinho_id, $produto_id, $quantidade]);
-                            $response['success'] = true;
-                            $response['message'] = 'Produto adicionado ao carrinho';
+                            $stmtUpdate = $pdo->prepare("UPDATE itemcarrinho SET quantidade = ? WHERE carrinho_id = ? AND produto_id = ?");
+                            $stmtUpdate->execute([$nova_quantidade, $carrinho_id, $produto_id]);
+                            $response = ['success' => true, 'message' => 'Quantidade atualizada'];
                         }
+                    } else {
+                        $stmtInsert = $pdo->prepare("INSERT INTO itemcarrinho (carrinho_id, produto_id, quantidade) VALUES (?, ?, ?)");
+                        $stmtInsert->execute([$carrinho_id, $produto_id, $quantidade]);
+                        $response = ['success' => true, 'message' => 'Produto adicionado ao carrinho'];
                     }
-                } catch (PDOException $e) {
-                    $response['success'] = false;
-                    $response['message'] = 'Erro ao adicionar produto.';
                 }
-                break;
+            } catch (PDOException $e) {
+                $response['message'] = 'Erro de base de dados ao adicionar.';
+            }
+            break;
 
-            // Os outros casos (remover, atualizar, limpar) também estavam corretos.
-            // ...
-        }
+        case 'remover':
+            $produto_id = (int)$_POST['produto_id'];
+            $stmt = $pdo->prepare("DELETE FROM itemcarrinho WHERE carrinho_id = ? AND produto_id = ?");
+            if ($stmt->execute([$carrinho_id, $produto_id])) {
+                $response = ['success' => true];
+            }
+            break;
+
+        case 'atualizar':
+            $produto_id = (int)$_POST['produto_id'];
+            $quantidade = (int)$_POST['quantidade'];
+
+            if ($quantidade <= 0) {
+                $stmt = $pdo->prepare("DELETE FROM itemcarrinho WHERE carrinho_id = ? AND produto_id = ?");
+                $stmt->execute([$carrinho_id, $produto_id]);
+                $response = ['success' => true];
+            } else {
+                $stmtStock = $pdo->prepare("SELECT estoque FROM produto WHERE id = ?");
+                $stmtStock->execute([$produto_id]);
+                $produto = $stmtStock->fetch();
+
+                if ($produto && $quantidade <= $produto['estoque']) {
+                    $stmt = $pdo->prepare("UPDATE itemcarrinho SET quantidade = ? WHERE carrinho_id = ? AND produto_id = ?");
+                    $stmt->execute([$quantidade, $carrinho_id, $produto_id]);
+                    $response = ['success' => true];
+                } else {
+                    $response['message'] = 'Stock insuficiente!';
+                }
+            }
+            break;
+
+        case 'limpar':
+            $stmt = $pdo->prepare("DELETE FROM itemcarrinho WHERE carrinho_id = ?");
+            if ($stmt->execute([$carrinho_id])) {
+                $response = ['success' => true];
+            }
+            break;
+    }
+
+    // Após qualquer alteração, recalcula os totais e envia de volta
+    if ($response['success']) {
+        $stmtSoma = $pdo->prepare("
+            SELECT SUM(p.preco * ic.quantidade) as total, COUNT(ic.id) as itemCount
+            FROM itemcarrinho ic
+            JOIN produto p ON ic.produto_id = p.id
+            WHERE ic.carrinho_id = ?
+        ");
+        $stmtSoma->execute([$carrinho_id]);
+        $resultado = $stmtSoma->fetch();
+        
+        $total_carrinho = $resultado['total'] ?? 0;
+        
+        $response['novoTotalCarrinho'] = number_format($total_carrinho, 2, ',', '.');
+        $response['freteTexto'] = $total_carrinho >= 199 ? 'Grátis' : 'A calcular';
+        $response['totalFinal'] = number_format($total_carrinho, 2, ',', '.'); // Ajustar se houver frete
+        $response['itemCount'] = $resultado['itemCount'] ?? 0;
     }
 
     header('Content-Type: application/json');
@@ -85,8 +133,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit;
 }
 
-// Buscar itens do carrinho para exibir na página
-$stmt = $pdo->prepare("
+// --- LÓGICA PARA EXIBIR A PÁGINA ---
+
+// Busca os itens do carrinho para exibir na página
+$stmtItens = $pdo->prepare("
     SELECT 
         ic.produto_id,
         ic.quantidade,
@@ -97,22 +147,22 @@ $stmt = $pdo->prepare("
         (ic.quantidade * p.preco) as subtotal
     FROM itemcarrinho ic
     JOIN produto p ON ic.produto_id = p.id
-    JOIN imagemproduto img ON p.id = img.produto_id
-    WHERE ic.carrinho_id = ? AND img.principal = 1
+    LEFT JOIN imagemproduto img ON p.id = img.produto_id AND img.principal = 1
+    WHERE ic.carrinho_id = ?
     ORDER BY ic.id DESC
 ");
-$stmt->execute([$carrinho_id]);
-$itens_carrinho = $stmt->fetchAll();
+$stmtItens->execute([$carrinho_id]);
+$itens_carrinho = $stmtItens->fetchAll();
 
-// Calcular total
+// Calcula o total
 $total = 0;
 foreach ($itens_carrinho as $item) {
     $total += $item['subtotal'];
 }
 
-// [CORREÇÃO] A inclusão do header.php vem ANTES de qualquer conteúdo HTML.
-
+include 'header.php';
 ?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -123,24 +173,24 @@ foreach ($itens_carrinho as $item) {
     <title>Carrinho | Ben-David</title>
 </head>
 <body>
-    <section class="carrinho-section">
-        <div class="section__container">
-            <h1 class="section__header">Meu Carrinho</h1>
-            
-            <?php if (empty($itens_carrinho)): ?>
-                <div class="carrinho-vazio">
+    <main>
+        <section class="carrinho-section">
+            <div class="section__container">
+                <h1 class="section__header">Meu Carrinho</h1>
+                
+                <div class="carrinho-vazio" style="<?php echo empty($itens_carrinho) ? 'display: block;' : 'display: none;'; ?>">
                     <i class="ri-shopping-cart-line"></i>
                     <h3>O seu carrinho está vazio</h3>
                     <p>Adicione produtos para continuar a comprar</p>
                     <a href="produtos.php" class="btn" style="background-color: #251B18; color: #fff;">Ver Produtos</a>
                 </div>
-            <?php else: ?>
-                <div class="carrinho-content">
+
+                <div class="carrinho-content" style="<?php echo empty($itens_carrinho) ? 'display: none;' : 'display: grid;'; ?>">
                     <div class="carrinho-itens">
                         <?php foreach ($itens_carrinho as $item): ?>
                             <div class="carrinho-item" data-produto="<?php echo $item['produto_id']; ?>">
                                 <div class="item-image">
-                                    <img src="<?php echo htmlspecialchars($item['url_imagem']); ?>" alt="<?php echo htmlspecialchars($item['nome']); ?>" />
+                                    <img src="<?php echo htmlspecialchars($item['url_imagem'] ?? '_images/padrao.jpg'); ?>" alt="<?php echo htmlspecialchars($item['nome']); ?>" />
                                 </div>
                                 <div class="item-info">
                                     <h3><?php echo htmlspecialchars($item['nome']); ?></h3>
@@ -173,11 +223,11 @@ foreach ($itens_carrinho as $item) {
                             </div>
                             <div class="resumo-linha">
                                 <span>Frete:</span>
-                                <span><?php echo $total >= 199 ? 'Grátis' : 'A calcular'; ?></span>
+                                <span id="frete"><?php echo $total >= 199 ? 'Grátis' : 'A calcular'; ?></span>
                             </div>
                             <div class="resumo-linha total">
                                 <span>Total:</span>
-                                <span id="total">R$ <?php echo number_format($total + ($total >= 199 ? 0 : 0), 2, ',', '.'); ?></span>
+                                <span id="total">R$ <?php echo number_format($total, 2, ',', '.'); ?></span>
                             </div>
                             <div class="resumo-actions">
                                 <button class="btn-secundario btn-limpar">Limpar Carrinho</button>
@@ -186,9 +236,8 @@ foreach ($itens_carrinho as $item) {
                         </div>
                     </div>
                 </div>
-            <?php endif; ?>
-        </div>
-    </section>
-<script src="js/main.js"></script> 
-<script src="js/carrinho.js"></script>
-<?php include 'footer.php'; ?>
+            </div>
+        </section>
+    </main>
+    <script src="js/carrinho.js"></script> 
+    <?php include 'footer.php'; ?>

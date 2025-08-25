@@ -19,8 +19,8 @@
 
 /* BANNER ESTILIZADO */
 .banner {
-  background: 
-    repeating-linear-gradient(to top, #173b1c, #A1CCA5 ),
+  background:
+  radial-gradient(at center, #A1CCA5, #183B1D),
     url('../img/banner-bg.jpg') no-repeat center center/cover;
   height: 100vh;
   display: flex;
