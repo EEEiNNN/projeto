@@ -14,7 +14,7 @@ if ($id > 0) {
 
         if ($pedido) {
             // Busca os itens do pedido
-            $stmtItens = $pdo->prepare("SELECT * FROM itempedido WHERE pedido_id = ?");
+            $stmtItens = $pdo->prepare("SELECT * FROM itempedidos WHERE pedidos_id = ?");
             $stmtItens->execute([$id]);
             $itens = $stmtItens->fetchAll(PDO::FETCH_ASSOC);
             

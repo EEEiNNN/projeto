@@ -5,7 +5,7 @@ $id = $_POST['id'];
 try {
     $pdo->beginTransaction();
     // Exclui primeiro os itens do pedido (chave estrangeira)
-    $stmtItens = $pdo->prepare("DELETE FROM itempedido WHERE pedido_id = ?");
+    $stmtItens = $pdo->prepare("DELETE FROM itempedidos WHERE pedidos_id = ?");
     $stmtItens->execute([$id]);
 
     // Depois exclui o pedido principal

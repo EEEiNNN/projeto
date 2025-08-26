@@ -1,30 +1,32 @@
 <?php
 include 'header.php';
 
-// Verificar se usuário está logado
 if (!isLoggedIn()) {
-    header('Location: index.php');
+    header('Location: login.php');
     exit;
 }
 
-$user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['id'];
 
-// Buscar pedidos do usuário
+// [CORREÇÃO] A query foi totalmente reescrita para usar as tabelas e colunas corretas
 $stmt = $pdo->prepare("
-    SELECT p.*, 
-           COUNT(pi.id) as total_itens,
-           GROUP_CONCAT(pr.nome SEPARATOR ', ') as produtos
+    SELECT 
+        p.id, p.total, p.status, p.data_pedidos,
+        COUNT(ip.id) as total_itens,
+        GROUP_CONCAT(pr.nome SEPARATOR ', ') as produtos,
+        CONCAT(e.rua, ', ', e.numero, ' - ', e.cidade, '/', e.estado) as endereco_completo
     FROM pedidos p
-    LEFT JOIN pedido_itens pi ON p.id = pi.pedido_id
-    LEFT JOIN produtos pr ON pi.produto_id = pr.id
+    LEFT JOIN itempedidos ip ON p.id = ip.pedidos_id
+    LEFT JOIN produto pr ON ip.produto_id = pr.id
+    LEFT JOIN endereco e ON p.endereco_id = e.id
     WHERE p.usuario_id = ?
     GROUP BY p.id
-    ORDER BY p.data_pedido DESC
+    ORDER BY p.data_pedidos DESC
 ");
 $stmt->execute([$user_id]);
-$pedidos = $stmt->fetchAll();
+$pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Função para obter cor do status
+// As funções getStatusColor e getStatusIcon permanecem as mesmas
 function getStatusColor($status) {
     switch($status) {
         case 'pendente': return '#f39c12';
@@ -36,7 +38,6 @@ function getStatusColor($status) {
     }
 }
 
-// Função para obter ícone do status
 function getStatusIcon($status) {
     switch($status) {
         case 'pendente': return 'ri-time-line';
@@ -48,16 +49,11 @@ function getStatusIcon($status) {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet" />
-    <link rel="stylesheet" href="css/styles.css" />
-    <title>Meus Pedidos | Ben-David</title>
-</head>
-<body>
+
+<title>Meus Pedidos | Ben-David</title>
+<link rel="stylesheet" href="_css/pedidos.css" />
+
+<main>
     <section class="pedidos-section">
         <div class="section__container">
             <h1 class="section__header">Meus Pedidos</h1>
@@ -76,9 +72,7 @@ function getStatusIcon($status) {
                             <div class="pedido-header">
                                 <div class="pedido-numero">
                                     <h3>Pedido #<?php echo str_pad($pedido['id'], 6, '0', STR_PAD_LEFT); ?></h3>
-                                    <span class="pedido-data">
-                                        <?php echo date('d/m/Y H:i', strtotime($pedido['data_pedido'])); ?>
-                                    </span>
+                                    <span class="pedido-data"><?php echo date('d/m/Y H:i', strtotime($pedido['data_pedidos'])); ?></span>
                                 </div>
                                 <div class="pedido-status">
                                     <span class="status-badge" style="background-color: <?php echo getStatusColor($pedido['status']); ?>">
@@ -91,16 +85,16 @@ function getStatusIcon($status) {
                             <div class="pedido-content">
                                 <div class="pedido-info">
                                     <div class="info-item">
-                                        <span class="label">Produtos:</span>
-                                        <span class="value"><?php echo h($pedido['produtos']); ?></span>
+                                        <span class="label">Produtos Resumo:</span>
+                                        <span class="value"><?php echo htmlspecialchars($pedido['produtos']); ?></span>
                                     </div>
                                     <div class="info-item">
                                         <span class="label">Total de itens:</span>
                                         <span class="value"><?php echo $pedido['total_itens']; ?></span>
                                     </div>
                                     <div class="info-item">
-                                        <span class="label">Endereço:</span>
-                                        <span class="value"><?php echo h($pedido['endereco_entrega']); ?></span>
+                                        <span class="label">Entregar em:</span>
+                                        <span class="value"><?php echo htmlspecialchars($pedido['endereco_completo']); ?></span>
                                     </div>
                                 </div>
                                 
@@ -112,24 +106,9 @@ function getStatusIcon($status) {
                             
                             <div class="pedido-actions">
                                 <button class="btn-detalhes" onclick="verDetalhes(<?php echo $pedido['id']; ?>)">
-                                    <i class="ri-eye-line"></i>
-                                    Ver Detalhes
+                                    <i class="ri-eye-line"></i> Ver Detalhes
                                 </button>
-                                
-                                <?php if ($pedido['status'] == 'pendente'): ?>
-                                    <button class="btn-cancelar" onclick="cancelarPedido(<?php echo $pedido['id']; ?>)">
-                                        <i class="ri-close-line"></i>
-                                        Cancelar
-                                    </button>
-                                <?php endif; ?>
-                                
-                                <?php if ($pedido['status'] == 'entregue'): ?>
-                                    <button class="btn-recomprar" onclick="recomprar(<?php echo $pedido['id']; ?>)">
-                                        <i class="ri-repeat-line"></i>
-                                        Comprar Novamente
-                                    </button>
-                                <?php endif; ?>
-                            </div>
+                                </div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -137,16 +116,15 @@ function getStatusIcon($status) {
         </div>
     </section>
 
-    <!-- Modal de Detalhes -->
     <div class="modal" id="detalhes-modal">
-        <div class="modal-content modal-large">
+        <div class="modal-content">
             <span class="close-btn" onclick="fecharModal()">&times;</span>
             <div id="detalhes-content">
-                <!-- Conteúdo carregado via JavaScript -->
-            </div>
+                </div>
         </div>
     </div>
+</main>
 
-    <script src="js/main.js"></script>
-    <script src="js/pedidos.js"></script>
+<script src="_js/pedidos.js"></script>
+
 <?php include 'footer.php'; ?>

@@ -31,12 +31,12 @@ try {
         $stmt->execute([$usuario_id, $status, $total_pedido, $endereco, $pedido_id]);
 
         // Apaga os itens antigos para reinserir os novos (maneira mais simples de atualizar)
-        $stmtDel = $pdo->prepare("DELETE FROM itempedido WHERE pedido_id = ?");
+        $stmtDel = $pdo->prepare("DELETE FROM itempedidos WHERE pedidos_id = ?");
         $stmtDel->execute([$pedido_id]);
     }
 
     // Insere os itens do pedido
-    $stmtItem = $pdo->prepare("INSERT INTO itempedido (pedido_id, produto_id, quantidade, preco) VALUES (?, ?, ?, ?)");
+    $stmtItem = $pdo->prepare("INSERT INTO itempedidos (pedidos_id, produto_id, quantidade, preco) VALUES (?, ?, ?, ?)");
     foreach ($itens as $item) {
         $stmtItem->execute([
             $pedido_id,
