@@ -453,10 +453,10 @@ VALUES
 -- Inserções de dados para tabela `imagemproduto
 INSERT INTO `imagemproduto`(`id`, `url_imagem`, `principal`, `produto_id`) 
 VALUES 
-(null,'https://lojavivara.vtexassets.com/arquivos/ids/836005-1600-1600/Anel-Black-Iron-Man-em-Prata-925-com-Rodio-Negro-e-Calcedonia-Verde-9830_1_set.jpg?v=638470137685770000','1','1'), 
-(null,'https://lojavivara.vtexassets.com/arquivos/ids/752926-1600-1600/Brinco-Argola-Forza-em-Prata-925-com-Rodio-Negro-79329_1_set.jpg?v=638437299595900000','1','2'), 
-(null,'https://lojavivara.vtexassets.com/arquivos/ids/754277-1600-1600/Corrente-Cadeado-em-Ouro-Branco-18k-60cm-87784_1_set.jpg?v=638437301896300000','1','3'), 
-(null,'https://lojavivara.vtexassets.com/arquivos/ids/777228-1600-1600/Pulseira-Cronos-em-Prata-925-80897_1_set.jpg?v=638437347892600000','1','4'); 
+(null,'_images/Anel-em-Prata-925-com-Rodio-Negro-e-Calcedonia-Verde.webp','1','1'), 
+(null,'_images/Brinco-Argola-em-Prata-925-com-Rodio-Negro.webp','1','2'), 
+(null,'_images/Corrente-Cadeado-em-Ouro-Branco-18k-60cm.webp','1','3'), 
+(null,'_images/Pulseira-em-Prata-925.webp','1','4'); 
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
