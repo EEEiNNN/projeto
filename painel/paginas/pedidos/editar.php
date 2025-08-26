@@ -2,10 +2,10 @@
 require_once("../../../conexao.php");
 header('Content-Type: application/json');
 
-$id = $_POST['id'] ?? 0;
-$response = ['success' => false, 'message' => 'ID do pedido não fornecido.'];
+$id = filter_input(INPUT_POST, 'id', FILTER_VALIDATE_INT);
+$response = ['success' => false, 'message' => 'ID do pedido inválido.'];
 
-if ($id > 0) {
+if ($id) {
     try {
         // Busca dados do pedido principal
         $stmtPedido = $pdo->prepare("SELECT * FROM pedidos WHERE id = ?");
