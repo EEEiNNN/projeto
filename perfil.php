@@ -7,7 +7,6 @@ if (!isLoggedIn()) {
 }
 
 $user_id = $_SESSION['id'];
-// Query atualizada para buscar o endereço com JOIN
 $stmt = $pdo->prepare("
     SELECT u.nome, u.email, u.telefone, 
            e.id as endereco_id, e.cep, e.rua, e.numero, e.complemento, e.bairro, e.cidade, e.estado

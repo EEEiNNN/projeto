@@ -26,7 +26,6 @@ function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
         return $row['url_imagem'];
     }
 
-    // Fallback caso não exista produto/imagem para a categoria
     return "_images/sem-imagem.jpg";
 }
 
@@ -55,7 +54,6 @@ function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
     <section class="banner">
       <div class="bannertext">
         <h1>NOVA COLEÇÃO</h1>
-        <!-- se desejar, você pode puxar uma imagem de destaque aqui também -->
         <img src="" alt="">
         <a href="produtos.php"><button>Ver mais</button></a>
       </div>

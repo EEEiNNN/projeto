@@ -1,12 +1,10 @@
 <?php
 require_once("conexao.php");
 
-// Lógica para criar o utilizador administrador padrão (se a tabela estiver vazia)
 try {
     $query = $pdo->query("SELECT id FROM usuarios LIMIT 1");
     if ($query->rowCount() == 0) {
         $senha_hash = password_hash('123', PASSWORD_DEFAULT);
-        // Garante que o status seja 'ativo' para o admin inicial
         $stmt = $pdo->prepare(
             "INSERT INTO usuarios (nome, email, senha, nivel, ativo, status) 
              VALUES ('Administrador', 'admin@admin.com', ?, 'admin', 'Sim', 'ativo')"
@@ -114,12 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let registerAction = 'check_email'; // Ação inicial do formulário de registo
 
-    // --- FUNÇÃO PARA GERIR CAMPOS OBRIGATÓRIOS (CORRIGE O ERRO "NOT FOCUSABLE") ---
     const manageRequiredAttributes = (activeContainerId) => {
         formContainers.forEach(container => {
             const isContainerActive = container.id === activeContainerId;
             container.querySelectorAll('input[name]').forEach(input => {
-                // Adiciona ou remove 'required' com base na visibilidade do formulário pai
                 if (isContainerActive && input.offsetParent !== null) {
                     input.setAttribute('required', 'required');
                 } else {
@@ -141,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById(formContainerId).classList.add('active');
             
             feedbackDiv.style.display = 'none';
-            manageRequiredAttributes(formContainerId); // Atualiza os campos obrigatórios
+            manageRequiredAttributes(formContainerId); 
         });
     });
 
@@ -181,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitButton.value = 'Aguarde...';
 
         const formData = new FormData(formRegister);
-        formData.append('action', registerAction); // Envia a ação correta!
+        formData.append('action', registerAction);
 
         try {
             const response = await fetch('autenticar.php', { method: 'POST', body: formData });
@@ -189,19 +185,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (data.success) {
                 if (registerAction === 'check_email') {
-                    // Avança para a etapa 2
                     registerStep1.style.display = 'none';
                     registerStep2.style.display = 'block';
                     emailInputRegister.readOnly = true;
 
-                    if (data.status === 'pending') { // Utilizador pré-registado
+                    if (data.status === 'pending') {
                         nomeWrapper.style.display = 'none';
                         registerAction = 'set_password';
-                    } else { // Novo utilizador
+                    } else { 
                         registerAction = 'register';
                     }
-                    manageRequiredAttributes('register-container'); // Reavalia os campos obrigatórios
-                } else { // Sucesso no registo final
+                    manageRequiredAttributes('register-container'); 
+                } else { 
                     showFeedback(data.message + ' Redirecionando...', true);
                     setTimeout(() => { window.location.href = 'login.php'; }, 2000);
                 }
@@ -215,15 +210,13 @@ document.addEventListener('DOMContentLoaded', () => {
             submitButton.value = originalButtonText;
         }
     });
-
-    // Funções de feedback
+    
     const showFeedback = (message, isSuccess) => {
         feedbackDiv.textContent = message;
         feedbackDiv.className = `feedback-message ${isSuccess ? 'success' : 'error'}`;
         feedbackDiv.style.display = 'block';
     };
 
-    // Inicializa os atributos 'required' na aba correta
     manageRequiredAttributes('login-container');
 });
 </script>

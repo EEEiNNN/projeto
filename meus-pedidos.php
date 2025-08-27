@@ -8,7 +8,6 @@ if (!isLoggedIn()) {
 
 $user_id = $_SESSION['id'];
 
-// [CORREÇÃO] A query foi totalmente reescrita para usar as tabelas e colunas corretas
 $stmt = $pdo->prepare("
     SELECT 
         p.id, p.total, p.status, p.data_pedidos,
@@ -26,7 +25,6 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// As funções getStatusColor e getStatusIcon permanecem as mesmas
 function getStatusColor($status) {
     switch($status) {
         case 'pendente': return '#f39c12';
