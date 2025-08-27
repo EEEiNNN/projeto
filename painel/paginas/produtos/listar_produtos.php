@@ -118,9 +118,6 @@ if($linhas > 0){
 <script type="text/javascript">
     $(document).ready(function(){
         $('#tabela').DataTable({
-            "language": {
-                "url": "//cdn.datatables.net/plug-ins/2.3.1/i18n/pt-BR.json"
-            },
             "ordering": false,
             "stateSave": true
         });
