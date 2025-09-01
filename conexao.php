@@ -3,7 +3,7 @@
 date_default_timezone_set('America/Sao_Paulo');
 
 // Dados de Conexão do Banco Local
-
+$base_url = 'http://10.10.142.5/php/php/projeto/';
 $host = 'localhost';
 $dbname = 'projeto';
 $username = 'root';
