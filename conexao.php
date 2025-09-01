@@ -23,23 +23,19 @@ try {
     die("Erro na conexão com o banco de dados. Tente novamente mais tarde.");
 }
 
-// Função para verificar se usuário está logado
 function isLoggedIn() {
     return (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) || 
            (isset($_SESSION['id']) && !empty($_SESSION['id']));
 }
 
-// Função para verificar se usuário é admin
 function isAdmin() {
     return isLoggedIn() && isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin';
 }
 
-// Função para verificar se usuário é comum
 function isComum() {
     return isLoggedIn() && isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'comum';
 }
 
-// Função para obter dados do usuário logado
 function getLoggedUser() {
     if (isLoggedIn()) {
         return [
@@ -52,7 +48,6 @@ function getLoggedUser() {
     return null;
 }
 
-// Função para redirecionar usuário baseado no tipo
 function redirectUserByType() {
     if (isAdmin()) {
         header('Location: painel/index.php');

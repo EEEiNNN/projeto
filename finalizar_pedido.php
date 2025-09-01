@@ -12,7 +12,6 @@ if (!isLoggedIn() || $_SERVER['REQUEST_METHOD'] !== 'POST') {
 $user_id = $_SESSION['id'];
 $endereco_id = $_POST['endereco_id'] ?? null;
 
-// [CORREÇÃO] Lógica de atualização de endereço que faltava
 $cep = trim($_POST['cep']);
 $rua = trim($_POST['rua']);
 $numero = trim($_POST['numero']);
@@ -21,14 +20,11 @@ $bairro = trim($_POST['bairro']);
 $cidade = trim($_POST['cidade']);
 $estado = trim($_POST['estado']);
 
-
-// Busca o carrinho_id
 $stmtCart = $pdo->prepare("SELECT id FROM carrinho WHERE usuario_id = ?");
 $stmtCart->execute([$user_id]);
 $carrinho = $stmtCart->fetch();
 $carrinho_id = $carrinho ? $carrinho['id'] : 0;
 
-// Busca os itens do carrinho para processamento
 $stmtItens = $pdo->prepare("SELECT * FROM itemcarrinho WHERE carrinho_id = ?");
 $stmtItens->execute([$carrinho_id]);
 $itens_carrinho = $stmtItens->fetchAll();
@@ -41,7 +37,6 @@ if (empty($itens_carrinho)) {
 try {
     $pdo->beginTransaction();
 
-    // Passo 1: Atualizar ou Inserir o Endereço do Utilizador (Lógica adicionada)
     if ($endereco_id) {
         $stmtAddr = $pdo->prepare(
             "UPDATE endereco SET cep=?, rua=?, numero=?, complemento=?, bairro=?, cidade=?, estado=? WHERE id=? AND usuario_id=?"
@@ -62,7 +57,6 @@ try {
         throw new Exception("O endereço de entrega é obrigatório.");
     }
 
-    // Passo 2: Calcular o total final no servidor
     $total_final = 0;
     $stmtPreco = $pdo->prepare("SELECT preco FROM produto WHERE id = ?");
     foreach($itens_carrinho as $item) {
@@ -73,7 +67,6 @@ try {
         }
     }
 
-    // --- Passo 3: Cria o registo na tabela `pedidos` (nome correto) ---
     $stmtPedido = $pdo->prepare(
         "INSERT INTO pedidos (usuario_id, total, data_pedidos, status, endereco_id) 
          VALUES (?, ?, NOW(), 'pendente', ?)"
@@ -81,7 +74,6 @@ try {
     $stmtPedido->execute([$user_id, $total_final, $endereco_id]);
     $pedido_id = $pdo->lastInsertId();
 
-    // --- Passo 4: Move os itens para a tabela `itempedidos` (nome correto) ---
     $stmtMoverItem = $pdo->prepare(
         "INSERT INTO itempedidos (pedidos_id, produto_id, quantidade, preco) 
          SELECT ?, ic.produto_id, ic.quantidade, p.preco 
@@ -90,7 +82,6 @@ try {
     );
     $stmtMoverItem->execute([$pedido_id, $carrinho_id]);
     
-    // --- Passo 5: Limpa o carrinho do utilizador ---
     $stmtLimpar = $pdo->prepare("DELETE FROM itemcarrinho WHERE carrinho_id = ?");
     $stmtLimpar->execute([$carrinho_id]);
 

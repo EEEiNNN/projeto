@@ -99,7 +99,6 @@ try {
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // --- ELEMENTOS DA PÁGINA ---
     const tabButtons = document.querySelectorAll('.tab-button');
     const formContainers = document.querySelectorAll('.form-container');
     const feedbackDiv = document.getElementById('feedback');
@@ -110,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const emailInputRegister = registerStep1.querySelector('input[name="email"]');
     const nomeWrapper = document.getElementById('nome-wrapper');
 
-    let registerAction = 'check_email'; // Ação inicial do formulário de registo
+    let registerAction = 'check_email'; 
 
     const manageRequiredAttributes = (activeContainerId) => {
         formContainers.forEach(container => {
@@ -125,7 +124,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // --- LÓGICA PARA ALTERNAR ENTRE ABAS ---
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
             const formContainerId = button.dataset.form + '-container';
@@ -141,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- LÓGICA DE SUBMISSÃO PARA O FORMULÁRIO DE LOGIN (SIMPLES) ---
     formLogin.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitButton = formLogin.querySelector('input[type="submit"]');
@@ -168,7 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- LÓGICA DE SUBMISSÃO PARA O FORMULÁRIO DE CADASTRO (MULTI-ETAPAS) ---
     formRegister.addEventListener('submit', async (e) => {
         e.preventDefault();
         const submitButton = e.currentTarget.querySelector('input[type="submit"]:not([style*="display: none"])');

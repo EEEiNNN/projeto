@@ -19,11 +19,9 @@ function redirect_with_feedback($type, $message) {
 }
 
 if ($action === 'update_details') {
-    // Dados do utilizador
     $nome = trim($_POST['nome']);
     $telefone = trim($_POST['telefone']);
     
-    // Dados do endereço
     $endereco_id = $_POST['endereco_id'] ?: null;
     $cep = trim($_POST['cep']);
     $rua = trim($_POST['rua']);
@@ -39,17 +37,15 @@ if ($action === 'update_details') {
     try {
         $pdo->beginTransaction();
 
-        // 1. Atualiza ou insere o endereço
-        if ($endereco_id) { // Endereço já existe, então atualiza
+        if ($endereco_id) { 
             $stmtEnd = $pdo->prepare("UPDATE endereco SET cep=?, rua=?, numero=?, bairro=?, cidade=?, estado=? WHERE id=? AND usuario_id=?");
             $stmtEnd->execute([$cep, $rua, $numero, $bairro, $cidade, $estado, $endereco_id, $user_id]);
-        } elseif (!empty($cep) || !empty($rua)) { // Endereço não existe, insere um novo
+        } elseif (!empty($cep) || !empty($rua)) { 
             $stmtEnd = $pdo->prepare("INSERT INTO endereco (cep, rua, numero, bairro, cidade, estado, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
             $stmtEnd->execute([$cep, $rua, $numero, $bairro, $cidade, $estado, $user_id]);
             $endereco_id = $pdo->lastInsertId();
         }
 
-        // 2. Atualiza o utilizador com o endereco_id correto
         $stmtUser = $pdo->prepare("UPDATE usuarios SET nome = ?, telefone = ?, endereco_id = ? WHERE id = ?");
         $stmtUser->execute([$nome, $telefone, $endereco_id, $user_id]);
 
@@ -64,7 +60,6 @@ if ($action === 'update_details') {
     }
 }
 
-// O seu código para 'change_password' permanece o mesmo aqui...
 
 header('Location: perfil.php');
 exit;

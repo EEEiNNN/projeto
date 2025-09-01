@@ -1,6 +1,4 @@
 <?php
-// Este ficheiro retorna apenas o HTML dos detalhes do pedido para o AJAX
-
 require_once 'conexao.php';
 
 if (!isLoggedIn()) {

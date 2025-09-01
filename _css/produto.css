@@ -105,7 +105,6 @@ button.comprar:disabled {
   cursor: not-allowed;
 }
 
-/* Estilos para Notificações (Toast) */
 #toast-container {
   position: fixed;
   bottom: 20px;
@@ -129,11 +128,11 @@ button.comprar:disabled {
 }
 
 .toast.success {
-  background-color: #27ae60; /* Verde */
+  background-color: #27ae60; 
 }
 
 .toast.error {
-  background-color: #e74c3c; /* Vermelho */
+  background-color: #e74c3c; 
 }
 
 .toast.hide {

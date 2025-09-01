@@ -15,10 +15,9 @@
     font-weight: 600;
 }
 
-/* [CORREÇÃO] Usando Grid Layout para mais controlo */
 .checkout-content {
     display: grid;
-    grid-template-columns: 1.5fr 1fr; /* Coluna do formulário é 1.5x maior que a do resumo */
+    grid-template-columns: 1.5fr 1fr;
     gap: 2rem;
 }
 
@@ -55,10 +54,9 @@
     padding: 1.5rem;
     border-radius: 8px;
     border: 1px solid #e9ecef;
-    /* [NOVO] Garante que a coluna se mantém no lugar */
     align-self: start;
     position: sticky;
-    top: 140px; /* Distância do topo (altura do header + um pouco mais) */
+    top: 140px; 
 }
 
 .summary-item,
@@ -102,14 +100,13 @@
     margin-bottom: 1.5rem;
 }
 
-/* [NOVO] Media Query para tornar o layout responsivo em ecrãs pequenos */
 @media (max-width: 992px) {
     .checkout-content {
-        grid-template-columns: 1fr; /* Empilha as colunas */
+        grid-template-columns: 1fr; 
     }
 
     .order-summary {
-        position: static; /* Remove o 'sticky' em ecrãs menores */
+        position: static;
         margin-top: 2rem;
     }
 }

@@ -3,9 +3,9 @@
 @import url('https://fonts.cdnfonts.com/css/futura-std-4');
 
 :root {
-  --primary-color: #709775; /* Um azul escuro sóbrio */
+  --primary-color: #709775;
   --primary-color-light: #A1CCA5;
-  --secondary-color: #e74c3c; /* Um vermelho para ações de remoção */
+  --secondary-color: #e74c3c; 
   --text-dark: #709775;
   --text-light: #A1CCA5;
   --extra-light: #f1f5f9;
@@ -14,7 +14,6 @@
   --header-height: 80px;
 }
 
-/* ---------- ESTILOS DE BASE (RESET) ---------- */
 * {
   padding: 0;
   margin: 0;
@@ -78,7 +77,7 @@ img {
     background-color: #95a5a6;
 }
 
-/* ---------- HEADER SIMPLES ---------- */
+
 .header-simple {
   background-color: var(--white);
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -119,7 +118,7 @@ img {
 }
 
 .nav__menu__btn {
-  display: none; /* Escondido em telas maiores */
+  display: none;
   font-size: 1.5rem;
   cursor: pointer;
 }
@@ -146,8 +145,6 @@ img {
     background-color: #c0392b;
 }
 
-
-/* ---------- SEÇÃO DO CARRINHO ---------- */
 .carrinho-section .section__container {
     padding-top: 3rem;
 }
@@ -177,14 +174,12 @@ img {
     margin-bottom: 2rem;
 }
 
-/* CONTEÚDO DO CARRINHO (ITENS + RESUMO) */
 .carrinho-content {
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
   align-items: flex-start;
 }
 
-/* LISTA DE ITENS */
 .carrinho-itens {
   background-color: var(--white);
   padding: 1.5rem;
@@ -256,7 +251,7 @@ img {
   border: none;
   font-size: 1rem;
   font-weight: 500;
-  -moz-appearance: textfield; /* Firefox */
+  -moz-appearance: textfield;
 }
 
 .quantidade-input::-webkit-outer-spin-button,
@@ -300,7 +295,6 @@ img {
   color: var(--secondary-color);
 }
 
-/* RESUMO DO PEDIDO */
 .carrinho-resumo {
   position: sticky;
   top: calc(var(--header-height) + 2rem);
@@ -355,15 +349,13 @@ img {
     width: 100%;
 }
 
-
-/* ---------- RESPONSIVIDADE ---------- */
 @media (max-width: 992px) {
   .carrinho-content {
-    grid-template-columns: 1fr; /* Coluna única para tablets e menores */
+    grid-template-columns: 1fr; 
   }
 
   .carrinho-resumo {
-      position: static; /* Remove o sticky em telas menores */
+      position: static; 
   }
 
   .item-controls {
@@ -377,21 +369,21 @@ img {
 
 @media (max-width: 768px) {
   .nav__links {
-    display: none; /* Esconde o menu de navegação normal */
+    display: none; 
   }
 
   .nav__menu__btn {
-    display: block; /* Mostra o botão de menu hamburguer */
+    display: block; 
   }
 
   .carrinho-item {
-    flex-wrap: wrap; /* Permite que os itens quebrem linha */
+    flex-wrap: wrap; 
     position: relative;
-    padding-bottom: 4rem; /* Mais espaço para os controles */
+    padding-bottom: 4rem; 
   }
 
   .item-info {
-    width: calc(100% - 100px - 1.5rem); /* Ocupa o espaço restante ao lado da imagem */
+    width: calc(100% - 100px - 1.5rem); 
   }
   
   .item-controls {
