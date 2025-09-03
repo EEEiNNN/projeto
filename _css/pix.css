@@ -1,0 +1,79 @@
+/* _css/pix.css */
+.pix-section {
+    padding: 50px 15px;
+    background-color: #f8f9fa;
+    min-height: 70vh;
+}
+.pix-container {
+    max-width: 550px;
+    margin: 0 auto;
+    padding: 30px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+.pix-header {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+.pix-details {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.pix-qrcode img {
+    max-width: 250px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 4px;
+}
+.pix-key {
+    margin-top: 25px;
+}
+.pix-key h2 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+}
+.pix-key textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+    font-family: monospace;
+    font-size: 0.9em;
+    background: #f4f4f4;
+    text-align: center;
+}
+.pix-key button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #555;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.pix-key button:hover {
+    background-color: #333;
+}
+.btn-pix-confirm {
+    display: inline-block;
+    width: 100%;
+    padding: 15px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.btn-pix-confirm:hover {
+    background-color: #218838;
+}

@@ -1,30 +1,53 @@
 <?php
-require_once 'conexao.php';
+// ATIVA A EXIBIÇÃO DE ERROS DO PHP - ESSENCIAL PARA DEBUG
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+// Define o cabeçalho da resposta como JSON
 header('Content-Type: application/json; charset=utf-8');
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET");
+
+require_once 'conexao.php'; // Inclui a conexão segura com o banco
 
 try {
-    $categoria = $_GET['categoria'] ?? null;
+    // ================== MUDANÇA CRÍTICA AQUI ==================
+    // Esta nova consulta une a tabela `produto` com a `imagemproduto`
+    // para buscar a URL da imagem principal de cada produto.
     $sql = "
-        SELECT p.id, p.nome, p.descricao, p.preco, p.estoque, c.nome as categoria, i.url_imagem 
-        FROM produto p
-        LEFT JOIN categoria c ON p.categoria_id = c.id
-        LEFT JOIN imagemproduto i ON p.id = i.produto_id AND i.principal = 1
-        WHERE p.ativo = 1
+        SELECT 
+            p.id, 
+            p.nome, 
+            p.preco,  
+            i.url_imagem AS imagem 
+        FROM 
+            produto p
+        LEFT JOIN 
+            imagemproduto i ON p.id = i.produto_id AND i.principal = 1
+        WHERE
+            p.ativo = 1
+        ORDER BY 
+            p.id DESC
     ";
     
-    if ($categoria) {
-        $sql .= " AND c.nome = :categoria";
-        $stmt = $pdo->prepare($sql);
-        $stmt->execute([':categoria' => $categoria]);
-    } else {
-        $stmt = $pdo->query($sql);
-    }
+    $stmt = $pdo->query($sql);
+    // ==========================================================
     
+    // Busca todos os resultados
     $produtos = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    echo json_encode(['success' => true, 'data' => $produtos]);
+
+    // Verifica se encontrou produtos
+    if ($produtos) {
+        // Retorna uma resposta de sucesso com a lista de produtos
+        echo json_encode(['status' => 'success', 'products' => $produtos]);
+    } else {
+        // Retorna uma resposta de sucesso com uma lista vazia
+        echo json_encode(['status' => 'success', 'products' => [], 'message' => 'Nenhum produto encontrado.']);
+    }
 
 } catch (Exception $e) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erro no servidor ao buscar produtos.']);
+    // Em caso de erro (ex: falha na consulta), retorna uma resposta de erro
+    http_response_code(500); // Internal Server Error
+    echo json_encode(['status' => 'error', 'message' => 'Erro no servidor: ' . $e->getMessage()]);
 }
 ?>
