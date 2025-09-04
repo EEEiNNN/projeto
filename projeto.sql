@@ -210,7 +210,7 @@ ALTER TABLE `pagamento`
 ALTER TABLE `pedidos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`),
-  ADD KEY `endereco_id` (`endereco_id`)
+  ADD KEY `endereco_id` (`endereco_id`),
   ADD KEY `pagamento_id` (`pagamento_id`);
 
 --
@@ -238,18 +238,6 @@ ALTER TABLE `carrinho`
 -- AUTO_INCREMENT de tabela `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `credito`
---
-ALTER TABLE `credito`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `debito`
---
-ALTER TABLE `debito`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
@@ -317,18 +305,6 @@ ALTER TABLE `carrinho`
   ADD CONSTRAINT `carrinho_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 --
--- Restrições para tabelas `credito`
---
-ALTER TABLE `credito`
-  ADD CONSTRAINT `credito_ibfk_1` FOREIGN KEY (`pagamento_id`) REFERENCES `pagamento` (`id`);
-
---
--- Restrições para tabelas `debito`
---
-ALTER TABLE `debito`
-  ADD CONSTRAINT `debito_ibfk_1` FOREIGN KEY (`pagamento_id`) REFERENCES `pagamento` (`id`);
-
---
 -- Restrições para tabelas `endereco`
 --
 ALTER TABLE `endereco`
@@ -360,7 +336,7 @@ ALTER TABLE `itempedidos`
 --
 ALTER TABLE `pedidos`
   ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`),
-  ADD CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`)
+  ADD CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`),
   ADD CONSTRAINT `pedidos_ibfk_3` FOREIGN KEY (`pagamento_id`) REFERENCES `pagamento` (`id`);
 
 --
