@@ -27,42 +27,6 @@ CREATE TABLE `categoria` (
   `ativo` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `credito`
---
-
-CREATE TABLE `credito` (
-  `id` bigint(20) NOT NULL,
-  `numero_cartao` varchar(20) DEFAULT NULL,
-  `nome_titular` varchar(100) DEFAULT NULL,
-  `validade` varchar(7) DEFAULT NULL,
-  `parcelas` int(11) DEFAULT NULL,
-  `banco` varchar(50) DEFAULT NULL,
-  `data` date DEFAULT NULL,
-  `pagamento_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `debito`
---
-
-CREATE TABLE `debito` (
-  `id` bigint(20) NOT NULL,
-  `numero_cartao` varchar(20) DEFAULT NULL,
-  `nome_titular` varchar(100) DEFAULT NULL,
-  `validade` varchar(7) DEFAULT NULL,
-  `banco` varchar(50) DEFAULT NULL,
-  `data` date DEFAULT NULL,
-  `banco_destinatario` varchar(100) DEFAULT NULL,
-  `chave` varchar(100) DEFAULT NULL,
-  `pagamento_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -132,8 +96,7 @@ CREATE TABLE `pagamento` (
   `metodo` varchar(50) DEFAULT NULL,
   `status` varchar(50) DEFAULT NULL,
   `valor` decimal(10,2) DEFAULT NULL,
-  `data_pagamento` datetime DEFAULT NULL,
-  `carrinho_id` bigint(20) DEFAULT NULL
+  `data_pagamento` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -149,7 +112,7 @@ CREATE TABLE `pedidos` (
   `data_pedidos` datetime DEFAULT NULL,
   `usuario_id` bigint(20) DEFAULT NULL,
   `endereco_id` bigint(20) DEFAULT NULL,
-  `carrinho_id` bigint(20) DEFAULT NULL
+  `pagamento_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -206,20 +169,6 @@ ALTER TABLE `categoria`
   ADD PRIMARY KEY (`id`);
 
 --
--- Índices de tabela `credito`
---
-ALTER TABLE `credito`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `pagamento_id` (`pagamento_id`);
-
---
--- Índices de tabela `debito`
---
-ALTER TABLE `debito`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `pagamento_id` (`pagamento_id`);
-
---
 -- Índices de tabela `endereco`
 --
 ALTER TABLE `endereco`
@@ -253,8 +202,7 @@ ALTER TABLE `itempedidos`
 -- Índices de tabela `pagamento`
 --
 ALTER TABLE `pagamento`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `carrinho_id` (`carrinho_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `pedidos`
@@ -262,8 +210,8 @@ ALTER TABLE `pagamento`
 ALTER TABLE `pedidos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`),
-  ADD KEY `endereco_id` (`endereco_id`),
-  ADD KEY `carrinho_id` (`carrinho_id`);
+  ADD KEY `endereco_id` (`endereco_id`)
+  ADD KEY `pagamento_id` (`pagamento_id`);
 
 --
 -- Índices de tabela `produto`
@@ -279,10 +227,6 @@ ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`),
   ADD KEY `endereco_id` (`endereco_id`);
-
---
--- AUTO_INCREMENT para tabelas despejadas
---
 
 --
 -- AUTO_INCREMENT de tabela `carrinho`
@@ -410,19 +354,14 @@ ALTER TABLE `itempedidos`
   ADD CONSTRAINT `itempedidos_ibfk_1` FOREIGN KEY (`produto_id`) REFERENCES `produto` (`id`),
   ADD CONSTRAINT `itempedidos_ibfk_2` FOREIGN KEY (`pedidos_id`) REFERENCES `pedidos` (`id`);
 
---
--- Restrições para tabelas `pagamento`
---
-ALTER TABLE `pagamento`
-  ADD CONSTRAINT `pagamento_ibfk_1` FOREIGN KEY (`carrinho_id`) REFERENCES `carrinho` (`id`);
 
 --
 -- Restrições para tabelas `pedidos`
 --
 ALTER TABLE `pedidos`
   ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`),
-  ADD CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`),
-  ADD CONSTRAINT `pedidos_ibfk_3` FOREIGN KEY (`carrinho_id`) REFERENCES `carrinho` (`id`);
+  ADD CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`)
+  ADD CONSTRAINT `pedidos_ibfk_3` FOREIGN KEY (`pagamento_id`) REFERENCES `pagamento` (`id`);
 
 --
 -- Restrições para tabelas `produto`
