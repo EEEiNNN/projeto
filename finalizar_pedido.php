@@ -45,7 +45,6 @@ if (empty($itens_carrinho)) {
 try {
     $pdo->beginTransaction();
 
-    // Atualiza ou insere o endereço e pega o ID. Esta parte continua aqui.
     if ($endereco_id) {
         $stmtAddr = $pdo->prepare(
             "UPDATE endereco SET cep=?, rua=?, numero=?, complemento=?, bairro=?, cidade=?, estado=? WHERE id=? AND usuario_id=?"
@@ -58,21 +57,19 @@ try {
         $stmtAddr->execute([$cep, $rua, $numero, $complemento, $bairro, $cidade, $estado, $user_id]);
         $endereco_id = $pdo->lastInsertId();
 
-        $stmtUser = $pdo->prepare("UPDATE usuarios SET endereco_id = ? WHERE id = ?");
-        $stmtUser->execute([$endereco_id, $user_id]);
+        // $stmtUser = $pdo->prepare("UPDATE usuarios SET endereco_id = ? WHERE id = ?");
+        // $stmtUser->execute([$endereco_id, $user_id]);
     }
 
     if (!$endereco_id) {
         throw new Exception("O endereço de entrega é obrigatório.");
     }
     
-    // Calcula o total final
     $total_final = 0;
     foreach($itens_carrinho as $item) {
         $total_final += $item['preco'] * $item['quantidade'];
     }
-    
-    // **NOVO**: Salva os dados do pedido na sessão em vez de no banco
+   
     $_SESSION['pedido_pendente'] = [
         'usuario_id' => $user_id,
         'endereco_id' => $endereco_id,
@@ -81,16 +78,16 @@ try {
         'itens' => $itens_carrinho
     ];
     
-    $pdo->commit(); // Confirma apenas a transação do endereço
+    $pdo->commit(); 
     
-    // Redireciona para a página de pagamento
     header('Location: pix.php');
     exit;
 
 } catch (Exception $e) {
     $pdo->rollBack();
+    // Para depuração, é útil ver o erro real. Pode mudar a linha abaixo temporariamente.
+    // $_SESSION['feedback_checkout'] = "Erro: " . $e->getMessage();
     $_SESSION['feedback_checkout'] = "Ocorreu um erro ao preparar seu pedido. Por favor, tente novamente.";
-    // Para depuração: $_SESSION['feedback_checkout'] = "Erro: " . $e->getMessage();
     header('Location: checkout.php');
     exit;
 }

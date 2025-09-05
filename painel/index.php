@@ -210,8 +210,8 @@ if($linhas > 0){
 								<div class="profile_img">	
 									<span class="prfil-img"><img src="images/perfil/sem-foto.jpg" alt="" width="50px" height="50px"> </span> 
 									<div class="user-name esc">
-										<p>Nome Usuário</p>
-										<span>Nível Usuário</span>
+										<p><?php echo $nome_usuario ?></p>
+										<span><?php echo $nivel_usuario ?></span>
 									</div>
 									<i class="fa fa-angle-down lnr"></i>
 									<i class="fa fa-angle-up lnr"></i>

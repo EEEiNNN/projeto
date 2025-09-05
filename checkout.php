@@ -29,10 +29,10 @@ if (empty($itens_carrinho)) {
 
 $total = array_sum(array_column($itens_carrinho, 'subtotal'));
 
+// [CORREÇÃO] A query agora busca o endereço diretamente pelo usuario_id na tabela de endereços.
 $stmtAddr = $pdo->prepare("
     SELECT e.* FROM endereco e 
-    LEFT JOIN usuarios u ON u.endereco_id = e.id 
-    WHERE u.id = ?
+    WHERE e.usuario_id = ?
 ");
 $stmtAddr->execute([$user_id]);
 $endereco = $stmtAddr->fetch(PDO::FETCH_ASSOC);

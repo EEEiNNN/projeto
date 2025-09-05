@@ -1,15 +1,28 @@
 <?php
 require_once __DIR__ . "/../conexao.php";
 
-class Produto
-{
-    private PDO $pdo;
+class Produto {
+    private $pdo;
 
-    public function __construct(PDO $pdo)
-    {
-        // Garante que exceções sejam lançadas caso não esteja setado no conexao.php
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    public function __construct($pdo) {
         $this->pdo = $pdo;
+    }
+
+    /**
+     * Busca um produto pelo ID.
+     */
+    public function findById($id) {
+        $stmt = $this->pdo->prepare("SELECT * FROM produto WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Atualiza o estoque de um produto.
+     */
+    public function updateStock($id, $newStock) {
+        $stmt = $this->pdo->prepare("UPDATE produto SET estoque = ? WHERE id = ?");
+        return $stmt->execute([$newStock, $id]);
     }
 
     /* ---------------------- CRUD BÁSICO (do seu model anterior) ---------------------- */
@@ -29,15 +42,7 @@ class Produto
         ]);
     }
 
-    public function findById($id): ?array
-    {
-        $sql = "SELECT * FROM produto WHERE id = :id LIMIT 1";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':id' => $id]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row ?: null;
-    }
-
+    
     public function findAll(): array
     {
         $sql = "SELECT * FROM produto ORDER BY data_cadastro DESC, id DESC";
