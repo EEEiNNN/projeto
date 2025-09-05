@@ -143,7 +143,6 @@ CREATE TABLE `usuarios` (
   `nome` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `telefone` varchar(15) DEFAULT NULL,
-  `endereco_id` bigint(20) DEFAULT NULL,
   `nivel` enum('admin','user') DEFAULT 'user',
   `senha` varchar(255) NULL,
   `status` ENUM('ativo','pendente','inativo') NOT NULL DEFAULT 'ativo',
@@ -225,8 +224,7 @@ ALTER TABLE `produto`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `endereco_id` (`endereco_id`);
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT de tabela `carrinho`
@@ -286,17 +284,11 @@ ALTER TABLE `produto`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT; 
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restrições para tabelas despejadas
 --
-
---
--- Restrições para tabelas `usuarios`
---
-ALTER TABLE `usuarios`
- ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`);
 
 --
 -- Restrições para tabelas `carrinho`
@@ -346,32 +338,32 @@ ALTER TABLE `produto`
   ADD CONSTRAINT `produto_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`);
 
 --
--- Inserções de dados para tabelas 
--- 
+-- Inserções de dados para tabelas
+--
 
 -- Inserções de dados para tabela `categoria`
-INSERT INTO `categoria`(`nome`, `ativo`) 
-VALUES 
-('aneis','1'), 
-('brincos','1'), 
-('colares','1'), 
+INSERT INTO `categoria`(`nome`, `ativo`)
+VALUES
+('aneis','1'),
+('brincos','1'),
+('colares','1'),
 ('pulseiras','1');
 
 -- Inserções de dados para tabela `produto`
-INSERT INTO `produto`(`id`, `nome`, `descricao`, `preco`, `estoque`, `data_cadastro`, `ativo`, `categoria_id`) 
-VALUES 
+INSERT INTO `produto`(`id`, `nome`, `descricao`, `preco`, `estoque`, `data_cadastro`, `ativo`, `categoria_id`)
+VALUES
 (null,'Anel','Anel em Prata 925 com Ródio Negro e Calcedonia Verde','1000','12', NOW(), 1, 1),
-(null,'Brincos','Brincos em Prata 925 com Ródio Negro','350','20', NOW(), 1, 2), 
-(null,'Corrente','Corrente Cadeado em Ouro Branco 18k, 60cm','6290','2', NOW(), 1, 3), 
+(null,'Brincos','Brincos em Prata 925 com Ródio Negro','350','20', NOW(), 1, 2),
+(null,'Corrente','Corrente Cadeado em Ouro Branco 18k, 60cm','6290','2', NOW(), 1, 3),
 (null,'Pulseira','Pulseira em Prata 925','1350','45', NOW(), 1, 4);
 
 -- Inserções de dados para tabela `imagemproduto
-INSERT INTO `imagemproduto`(`id`, `url_imagem`, `principal`, `produto_id`) 
-VALUES 
-(null,'_images/Anel-em-Prata-925-com-Rodio-Negro-e-Calcedonia-Verde.webp','1','1'), 
-(null,'_images/Brinco-Argola-em-Prata-925-com-Rodio-Negro.webp','1','2'), 
-(null,'_images/Corrente-Cadeado-em-Ouro-Branco-18k-60cm.webp','1','3'), 
-(null,'_images/Pulseira-em-Prata-925.webp','1','4'); 
+INSERT INTO `imagemproduto`(`id`, `url_imagem`, `principal`, `produto_id`)
+VALUES
+(null,'_images/Anel-em-Prata-925-com-Rodio-Negro-e-Calcedonia-Verde.webp','1','1'),
+(null,'_images/Brinco-Argola-em-Prata-925-com-Rodio-Negro.webp','1','2'),
+(null,'_images/Corrente-Cadeado-em-Ouro-Branco-18k-60cm.webp','1','3'),
+(null,'_images/Pulseira-em-Prata-925.webp','1','4');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
