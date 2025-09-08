@@ -8,11 +8,33 @@ use BaconQrCode\Exception;
 final class Rgb implements ColorInterface
 {
     /**
+<<<<<<< HEAD
+=======
+     * @var int
+     */
+    private $red;
+
+    /**
+     * @var int
+     */
+    private $green;
+
+    /**
+     * @var int
+     */
+    private $blue;
+
+    /**
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
      * @param int $red the red amount of the color, 0 to 255
      * @param int $green the green amount of the color, 0 to 255
      * @param int $blue the blue amount of the color, 0 to 255
      */
+<<<<<<< HEAD
     public function __construct(private readonly int $red, private readonly int $green, private readonly int $blue)
+=======
+    public function __construct(int $red, int $green, int $blue)
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     {
         if ($red < 0 || $red > 255) {
             throw new Exception\InvalidArgumentException('Red must be between 0 and 255');
@@ -25,6 +47,13 @@ final class Rgb implements ColorInterface
         if ($blue < 0 || $blue > 255) {
             throw new Exception\InvalidArgumentException('Blue must be between 0 and 255');
         }
+<<<<<<< HEAD
+=======
+
+        $this->red = $red;
+        $this->green = $green;
+        $this->blue = $blue;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     }
 
     public function getRed() : int
@@ -54,10 +83,13 @@ final class Rgb implements ColorInterface
         $y = 1 - ($this->blue / 255);
         $k = min($c, $m, $y);
 
+<<<<<<< HEAD
         if ($k === 0) {
             return new Cmyk(0, 0, 0, 0);
         }
 
+=======
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         return new Cmyk(
             (int) (100 * ($c - $k) / (1 - $k)),
             (int) (100 * ($m - $k) / (1 - $k)),

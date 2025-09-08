@@ -27,42 +27,6 @@ CREATE TABLE `categoria` (
   `ativo` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `credito`
---
-
-CREATE TABLE `credito` (
-  `id` bigint(20) NOT NULL,
-  `numero_cartao` varchar(20) DEFAULT NULL,
-  `nome_titular` varchar(100) DEFAULT NULL,
-  `validade` varchar(7) DEFAULT NULL,
-  `parcelas` int(11) DEFAULT NULL,
-  `banco` varchar(50) DEFAULT NULL,
-  `data` date DEFAULT NULL,
-  `pagamento_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
--- --------------------------------------------------------
-
---
--- Estrutura para tabela `debito`
---
-
-CREATE TABLE `debito` (
-  `id` bigint(20) NOT NULL,
-  `numero_cartao` varchar(20) DEFAULT NULL,
-  `nome_titular` varchar(100) DEFAULT NULL,
-  `validade` varchar(7) DEFAULT NULL,
-  `banco` varchar(50) DEFAULT NULL,
-  `data` date DEFAULT NULL,
-  `banco_destinatario` varchar(100) DEFAULT NULL,
-  `chave` varchar(100) DEFAULT NULL,
-  `pagamento_id` bigint(20) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -132,8 +96,7 @@ CREATE TABLE `pagamento` (
   `metodo` varchar(50) DEFAULT NULL,
   `status` varchar(50) DEFAULT NULL,
   `valor` decimal(10,2) DEFAULT NULL,
-  `data_pagamento` datetime DEFAULT NULL,
-  `carrinho_id` bigint(20) DEFAULT NULL
+  `data_pagamento` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -149,7 +112,7 @@ CREATE TABLE `pedidos` (
   `data_pedidos` datetime DEFAULT NULL,
   `usuario_id` bigint(20) DEFAULT NULL,
   `endereco_id` bigint(20) DEFAULT NULL,
-  `carrinho_id` bigint(20) DEFAULT NULL
+  `pagamento_id` bigint(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -180,7 +143,6 @@ CREATE TABLE `usuarios` (
   `nome` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `telefone` varchar(15) DEFAULT NULL,
-  `endereco_id` bigint(20) DEFAULT NULL,
   `nivel` enum('admin','user') DEFAULT 'user',
   `senha` varchar(255) NULL,
   `status` ENUM('ativo','pendente','inativo') NOT NULL DEFAULT 'ativo',
@@ -204,20 +166,6 @@ ALTER TABLE `carrinho`
 --
 ALTER TABLE `categoria`
   ADD PRIMARY KEY (`id`);
-
---
--- Índices de tabela `credito`
---
-ALTER TABLE `credito`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `pagamento_id` (`pagamento_id`);
-
---
--- Índices de tabela `debito`
---
-ALTER TABLE `debito`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `pagamento_id` (`pagamento_id`);
 
 --
 -- Índices de tabela `endereco`
@@ -253,8 +201,7 @@ ALTER TABLE `itempedidos`
 -- Índices de tabela `pagamento`
 --
 ALTER TABLE `pagamento`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `carrinho_id` (`carrinho_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `pedidos`
@@ -263,7 +210,7 @@ ALTER TABLE `pedidos`
   ADD PRIMARY KEY (`id`),
   ADD KEY `usuario_id` (`usuario_id`),
   ADD KEY `endereco_id` (`endereco_id`),
-  ADD KEY `carrinho_id` (`carrinho_id`);
+  ADD KEY `pagamento_id` (`pagamento_id`);
 
 --
 -- Índices de tabela `produto`
@@ -277,12 +224,7 @@ ALTER TABLE `produto`
 --
 ALTER TABLE `usuarios`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD KEY `endereco_id` (`endereco_id`);
-
---
--- AUTO_INCREMENT para tabelas despejadas
---
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT de tabela `carrinho`
@@ -294,18 +236,6 @@ ALTER TABLE `carrinho`
 -- AUTO_INCREMENT de tabela `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `credito`
---
-ALTER TABLE `credito`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT de tabela `debito`
---
-ALTER TABLE `debito`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
@@ -354,35 +284,17 @@ ALTER TABLE `produto`
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT; 
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
 
 --
 -- Restrições para tabelas despejadas
 --
 
 --
--- Restrições para tabelas `usuarios`
---
-ALTER TABLE `usuarios`
- ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`);
-
---
 -- Restrições para tabelas `carrinho`
 --
 ALTER TABLE `carrinho`
   ADD CONSTRAINT `carrinho_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
-
---
--- Restrições para tabelas `credito`
---
-ALTER TABLE `credito`
-  ADD CONSTRAINT `credito_ibfk_1` FOREIGN KEY (`pagamento_id`) REFERENCES `pagamento` (`id`);
-
---
--- Restrições para tabelas `debito`
---
-ALTER TABLE `debito`
-  ADD CONSTRAINT `debito_ibfk_1` FOREIGN KEY (`pagamento_id`) REFERENCES `pagamento` (`id`);
 
 --
 -- Restrições para tabelas `endereco`
@@ -410,11 +322,6 @@ ALTER TABLE `itempedidos`
   ADD CONSTRAINT `itempedidos_ibfk_1` FOREIGN KEY (`produto_id`) REFERENCES `produto` (`id`),
   ADD CONSTRAINT `itempedidos_ibfk_2` FOREIGN KEY (`pedidos_id`) REFERENCES `pedidos` (`id`);
 
---
--- Restrições para tabelas `pagamento`
---
-ALTER TABLE `pagamento`
-  ADD CONSTRAINT `pagamento_ibfk_1` FOREIGN KEY (`carrinho_id`) REFERENCES `carrinho` (`id`);
 
 --
 -- Restrições para tabelas `pedidos`
@@ -422,7 +329,7 @@ ALTER TABLE `pagamento`
 ALTER TABLE `pedidos`
   ADD CONSTRAINT `pedidos_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`),
   ADD CONSTRAINT `pedidos_ibfk_2` FOREIGN KEY (`endereco_id`) REFERENCES `endereco` (`id`),
-  ADD CONSTRAINT `pedidos_ibfk_3` FOREIGN KEY (`carrinho_id`) REFERENCES `carrinho` (`id`);
+  ADD CONSTRAINT `pedidos_ibfk_3` FOREIGN KEY (`pagamento_id`) REFERENCES `pagamento` (`id`);
 
 --
 -- Restrições para tabelas `produto`
@@ -431,32 +338,32 @@ ALTER TABLE `produto`
   ADD CONSTRAINT `produto_ibfk_1` FOREIGN KEY (`categoria_id`) REFERENCES `categoria` (`id`);
 
 --
--- Inserções de dados para tabelas 
--- 
+-- Inserções de dados para tabelas
+--
 
 -- Inserções de dados para tabela `categoria`
-INSERT INTO `categoria`(`nome`, `ativo`) 
-VALUES 
-('aneis','1'), 
-('brincos','1'), 
-('colares','1'), 
+INSERT INTO `categoria`(`nome`, `ativo`)
+VALUES
+('aneis','1'),
+('brincos','1'),
+('colares','1'),
 ('pulseiras','1');
 
 -- Inserções de dados para tabela `produto`
-INSERT INTO `produto`(`id`, `nome`, `descricao`, `preco`, `estoque`, `data_cadastro`, `ativo`, `categoria_id`) 
-VALUES 
+INSERT INTO `produto`(`id`, `nome`, `descricao`, `preco`, `estoque`, `data_cadastro`, `ativo`, `categoria_id`)
+VALUES
 (null,'Anel','Anel em Prata 925 com Ródio Negro e Calcedonia Verde','1000','12', NOW(), 1, 1),
-(null,'Brincos','Brincos em Prata 925 com Ródio Negro','350','20', NOW(), 1, 2), 
-(null,'Corrente','Corrente Cadeado em Ouro Branco 18k, 60cm','6290','2', NOW(), 1, 3), 
+(null,'Brincos','Brincos em Prata 925 com Ródio Negro','350','20', NOW(), 1, 2),
+(null,'Corrente','Corrente Cadeado em Ouro Branco 18k, 60cm','6290','2', NOW(), 1, 3),
 (null,'Pulseira','Pulseira em Prata 925','1350','45', NOW(), 1, 4);
 
 -- Inserções de dados para tabela `imagemproduto
-INSERT INTO `imagemproduto`(`id`, `url_imagem`, `principal`, `produto_id`) 
-VALUES 
-(null,'_images/Anel-em-Prata-925-com-Rodio-Negro-e-Calcedonia-Verde.webp','1','1'), 
-(null,'_images/Brinco-Argola-em-Prata-925-com-Rodio-Negro.webp','1','2'), 
-(null,'_images/Corrente-Cadeado-em-Ouro-Branco-18k-60cm.webp','1','3'), 
-(null,'_images/Pulseira-em-Prata-925.webp','1','4'); 
+INSERT INTO `imagemproduto`(`id`, `url_imagem`, `principal`, `produto_id`)
+VALUES
+(null,'_images/Anel-em-Prata-925-com-Rodio-Negro-e-Calcedonia-Verde.webp','1','1'),
+(null,'_images/Brinco-Argola-em-Prata-925-com-Rodio-Negro.webp','1','2'),
+(null,'_images/Corrente-Cadeado-em-Ouro-Branco-18k-60cm.webp','1','3'),
+(null,'_images/Pulseira-em-Prata-925.webp','1','4');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

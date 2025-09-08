@@ -110,8 +110,6 @@ body {
   min-width: 150px;
 }
 
-/* Responsivo */
-
 @media (max-width: 768px) {
   .footer .container {
     flex-direction: column;

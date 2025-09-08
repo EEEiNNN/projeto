@@ -17,6 +17,7 @@ class BitMatrix
 {
     /**
      * Width of the bit matrix.
+<<<<<<< HEAD
      */
     private int $width;
 
@@ -29,18 +30,46 @@ class BitMatrix
      * Size in bits of each individual row.
      */
     private int $rowSize;
+=======
+     *
+     * @var int
+     */
+    private $width;
+
+    /**
+     * Height of the bit matrix.
+     *
+     * @var int
+     */
+    private $height;
+
+    /**
+     * Size in bits of each individual row.
+     *
+     * @var int
+     */
+    private $rowSize;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * Bits representation.
      *
      * @var SplFixedArray<int>
      */
+<<<<<<< HEAD
     private SplFixedArray $bits;
+=======
+    private $bits;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * @throws InvalidArgumentException if a dimension is smaller than zero
      */
+<<<<<<< HEAD
     public function __construct(int $width, ?int $height = null)
+=======
+    public function __construct(int $width, int $height = null)
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     {
         if (null === $height) {
             $height = $width;
@@ -132,7 +161,11 @@ class BitMatrix
     /**
      * A fast method to retrieve one row of data from the matrix as a BitArray.
      */
+<<<<<<< HEAD
     public function getRow(int $y, ?BitArray $row = null) : BitArray
+=======
+    public function getRow(int $y, BitArray $row = null) : BitArray
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     {
         if (null === $row || $row->getSize() < $this->width) {
             $row = new BitArray($this->width);

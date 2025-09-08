@@ -15,10 +15,25 @@ use BaconQrCode\Renderer\RendererInterface;
 final class Writer
 {
     /**
+<<<<<<< HEAD
      * Creates a new writer with a specific renderer.
      */
     public function __construct(private readonly RendererInterface $renderer)
     {
+=======
+     * Renderer instance.
+     *
+     * @var RendererInterface
+     */
+    private $renderer;
+
+    /**
+     * Creates a new writer with a specific renderer.
+     */
+    public function __construct(RendererInterface $renderer)
+    {
+        $this->renderer = $renderer;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     }
 
     /**
@@ -31,7 +46,11 @@ final class Writer
      */
     public function writeString(
         string $content,
+<<<<<<< HEAD
         string $encoding = Encoder::DEFAULT_BYTE_MODE_ENCODING,
+=======
+        string $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         ?ErrorCorrectionLevel $ecLevel = null,
         ?Version $forcedVersion = null
     ) : string {
@@ -54,7 +73,11 @@ final class Writer
     public function writeFile(
         string $content,
         string $filename,
+<<<<<<< HEAD
         string $encoding = Encoder::DEFAULT_BYTE_MODE_ENCODING,
+=======
+        string $encoding = Encoder::DEFAULT_BYTE_MODE_ECODING,
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         ?ErrorCorrectionLevel $ecLevel = null,
         ?Version $forcedVersion = null
     ) : void {

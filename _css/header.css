@@ -18,16 +18,16 @@ html {
 body {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Usa vh para se basear na altura da janela */
-  padding-top: 120px; /* Compensa a altura do header fixo */
+  min-height: 100vh;
+  padding-top: 120px;
 }
 
 main {
-  flex: 1 0 auto; /* Faz o conteúdo principal crescer e empurrar o footer */
+  flex: 1 0 auto;
 }
 
-.footer { /* Certifique-se que o seu footer tem esta classe */
-  flex-shrink: 0; /* Impede o footer de encolher */
+.footer {
+  flex-shrink: 0;
 }
 
 header {
@@ -37,68 +37,39 @@ header {
   left: 0;
   width: 100%;
   height: 120px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
+  padding: 0 20px;
   z-index: 999;
   background-color: var(--brown);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.container-fluid a {
-  color: var(--green);
-}
-
-.nav {
   display: flex;
-  color: var(--brown);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar {
   flex: 1;
-}
-
-.nav ul {
-  display: flex;
-  background-color: var(--brown);
-  margin-top: 20px;
-  gap: 30px;
-  list-style: none;
-}
-
-.nav ul li a {
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.dropdown-menu.show {
-  background-color: var(--brown);
+  justify-content: flex-start;
 }
 
 .logo {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  flex: 1;
+  text-align: center;
 }
 
 .logo a {
-  position: relative;
-  top: 10px;
   text-decoration: none;
   color: inherit;
-  padding-top: 10px;
 }
 
 .logo h1 {
   font-size: 2.5rem;
   color: var(--green);
   font-family: 'Animoto', sans-serif;
+  margin: 0;
 }
 
 .actions-wrapper {
-  position: absolute;
-  right: 40px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 11;
+  flex: 1;
 }
 
 .actions-wrapper ul {
@@ -107,6 +78,16 @@ header {
   gap: 15px;
   margin: 0;
   padding: 0;
+  justify-content: flex-end;
+}
+
+/* Estilos complementares */
+.container-fluid a {
+  color: var(--green);
+}
+
+.dropdown-menu.show {
+  background-color: var(--brown);
 }
 
 .actions-wrapper a {
@@ -124,4 +105,44 @@ a.dropdown-toggle::after {
 
 .icon-button:hover svg {
   transform: scale(1.1);
+}
+
+@media (max-width: 991.98px) {
+    header .nav-item.dropdown {
+      position: fixed;
+    }
+    
+    header .navbar-nav .dropdown-menu {
+      top: 110px;
+      position: fixed;
+    }
+
+    header .dropdown-menu {
+        left: 0;
+        right: 0;
+        width: 100%;
+        border-radius: 0;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    header .dropdown-menu .dropdown-item {
+        color: var(--green);
+        text-align: center;
+        padding: 12px 20px;
+    }
+
+    header .dropdown-menu .dropdown-item:hover {
+        background-color: rgba(161, 204, 165, 0.1);
+        color: var(--green);
+    }
+}
+
+@media (max-width: 420px) {
+  .logo h1 {
+    font-size: 2rem;
+  }
+  header {
+    padding: 0 10px;
+  }
 }

@@ -65,7 +65,7 @@ body {
 
 .produto-card {
   width: 100%;
-  max-width: 300px; /* este é o segredo para não esticar demais */
+  max-width: 300px;
   background: #fff;
   padding: 15px;
   border-radius: 12px;
@@ -113,7 +113,6 @@ body {
   background: #709775;
 }
 
-/* Estilos para Notificações (Toast) */
 #toast-container {
   position: fixed;
   bottom: 20px;
@@ -137,19 +136,17 @@ body {
 }
 
 .toast.success {
-  background-color: #27ae60; /* Verde */
+  background-color: #27ae60;
 }
 
 .toast.error {
-  background-color: #e74c3c; /* Vermelho */
+  background-color: #e74c3c;
 }
 
 .toast.hide {
   opacity: 0;
   transform: translateX(100%);
 }
-
-/* -------- RESPONSIVO -------- */
 
 @media screen and (max-width: 600px) {
   .produtos-section {

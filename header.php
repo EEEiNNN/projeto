@@ -1,9 +1,8 @@
 <?php
-// Inicia a sessão de forma segura
+
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-// Inclui a conexão e funções globais
 require_once 'conexao.php';
 ?>
 <!DOCTYPE html>

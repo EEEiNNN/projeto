@@ -6,13 +6,25 @@ namespace BaconQrCode\Renderer\Module\EdgeIterator;
 final class Edge
 {
     /**
+<<<<<<< HEAD
      * @var array<int[]>
      */
     private array $points = [];
+=======
+     * @var bool
+     */
+    private $positive;
+
+    /**
+     * @var array<int[]>
+     */
+    private $points = [];
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * @var array<int[]>|null
      */
+<<<<<<< HEAD
     private ?array $simplifiedPoints = null;
 
     private int $minX = PHP_INT_MAX;
@@ -25,6 +37,33 @@ final class Edge
 
     public function __construct(private readonly bool $positive)
     {
+=======
+    private $simplifiedPoints;
+
+    /**
+     * @var int
+     */
+    private $minX = PHP_INT_MAX;
+
+    /**
+     * @var int
+     */
+    private $minY = PHP_INT_MAX;
+
+    /**
+     * @var int
+     */
+    private $maxX = -1;
+
+    /**
+     * @var int
+     */
+    private $maxY = -1;
+
+    public function __construct(bool $positive)
+    {
+        $this->positive = $positive;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     }
 
     public function addPoint(int $x, int $y) : void

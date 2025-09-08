@@ -50,34 +50,62 @@ final class Version
 
     /**
      * Version number of this version.
+<<<<<<< HEAD
      */
     private int $versionNumber;
+=======
+     *
+     * @var int
+     */
+    private $versionNumber;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * Alignment pattern centers.
      *
+<<<<<<< HEAD
      * @var SplFixedArray|array
      */
     private SplFixedArray|array $alignmentPatternCenters;
+=======
+     * @var SplFixedArray
+     */
+    private $alignmentPatternCenters;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * Error correction blocks.
      *
      * @var EcBlocks[]
      */
+<<<<<<< HEAD
     private array $ecBlocks;
 
     /**
      * Total number of codewords.
      */
     private null|int|float $totalCodewords;
+=======
+    private $ecBlocks;
+
+    /**
+     * Total number of codewords.
+     *
+     * @var int
+     */
+    private $totalCodewords;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * Cached version instances.
      *
      * @var array<int, self>|null
      */
+<<<<<<< HEAD
     private static ?array $versions = null;
+=======
+    private static $versions;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * @param int[] $alignmentPatternCenters
@@ -296,7 +324,11 @@ final class Version
                 [6, 26],
                 new EcBlocks(20, new EcBlock(1, 80)),
                 new EcBlocks(18, new EcBlock(2, 32)),
+<<<<<<< HEAD
                 new EcBlocks(26, new EcBlock(2, 24)),
+=======
+                new EcBlocks(26, new EcBlock(3, 24)),
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
                 new EcBlocks(16, new EcBlock(4, 9))
             ),
             new self(

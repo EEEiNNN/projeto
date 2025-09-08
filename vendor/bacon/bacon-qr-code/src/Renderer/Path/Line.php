@@ -5,8 +5,25 @@ namespace BaconQrCode\Renderer\Path;
 
 final class Line implements OperationInterface
 {
+<<<<<<< HEAD
     public function __construct(private readonly float $x, private readonly float $y)
     {
+=======
+    /**
+     * @var float
+     */
+    private $x;
+
+    /**
+     * @var float
+     */
+    private $y;
+
+    public function __construct(float $x, float $y)
+    {
+        $this->x = $x;
+        $this->y = $y;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     }
 
     public function getX() : float
@@ -26,6 +43,7 @@ final class Line implements OperationInterface
     {
         return new self($this->x + $x, $this->y + $y);
     }
+<<<<<<< HEAD
 
     /**
      * @return self
@@ -39,4 +57,6 @@ final class Line implements OperationInterface
         $yr = $this->x * $sin + $this->y * $cos;
         return new self($xr, $yr);
     }
+=======
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 }

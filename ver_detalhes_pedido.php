@@ -1,6 +1,4 @@
 <?php
-// Este ficheiro retorna apenas o HTML dos detalhes do pedido para o AJAX
-
 require_once 'conexao.php';
 
 if (!isLoggedIn()) {
@@ -16,10 +14,6 @@ if (!$pedido_id) {
     exit;
 }
 
-// [CORREÇÃO] A query foi ajustada para usar os nomes de tabela e coluna corretos:
-// 'itempedidos' em vez de 'itempedido'
-// 'pedidos' em vez de 'pedido'
-// 'ip.pedidos_id' em vez de 'ip.pedido_id'
 $stmt = $pdo->prepare("
     SELECT 
         ip.quantidade, ip.preco,
@@ -39,7 +33,6 @@ if (empty($itens)) {
     exit;
 }
 
-// O HTML para ser injetado no modal (sem alterações)
 ?>
 <h4>Detalhes do Pedido #<?php echo str_pad($pedido_id, 6, '0', STR_PAD_LEFT); ?></h4>
 <p>Status: <strong><?php echo ucfirst($itens[0]['status']); ?></strong></p>

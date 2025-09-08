@@ -4,6 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 require_once 'conexao.php';
 
+// Verifica se o usuário está logado e o método é POST
 if (!isLoggedIn() || $_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: login.php');
     exit;
@@ -12,7 +13,7 @@ if (!isLoggedIn() || $_SERVER['REQUEST_METHOD'] !== 'POST') {
 $user_id = $_SESSION['id'];
 $endereco_id = $_POST['endereco_id'] ?? null;
 
-// [CORREÇÃO] Lógica de atualização de endereço que faltava
+// Dados do endereço
 $cep = trim($_POST['cep']);
 $rua = trim($_POST['rua']);
 $numero = trim($_POST['numero']);
@@ -21,15 +22,18 @@ $bairro = trim($_POST['bairro']);
 $cidade = trim($_POST['cidade']);
 $estado = trim($_POST['estado']);
 
-
-// Busca o carrinho_id
+// Busca o carrinho e os itens
 $stmtCart = $pdo->prepare("SELECT id FROM carrinho WHERE usuario_id = ?");
 $stmtCart->execute([$user_id]);
 $carrinho = $stmtCart->fetch();
 $carrinho_id = $carrinho ? $carrinho['id'] : 0;
 
-// Busca os itens do carrinho para processamento
-$stmtItens = $pdo->prepare("SELECT * FROM itemcarrinho WHERE carrinho_id = ?");
+$stmtItens = $pdo->prepare("
+    SELECT ic.produto_id, ic.quantidade, p.preco 
+    FROM itemcarrinho ic 
+    JOIN produto p ON ic.produto_id = p.id 
+    WHERE ic.carrinho_id = ?
+");
 $stmtItens->execute([$carrinho_id]);
 $itens_carrinho = $stmtItens->fetchAll();
 
@@ -41,7 +45,6 @@ if (empty($itens_carrinho)) {
 try {
     $pdo->beginTransaction();
 
-    // Passo 1: Atualizar ou Inserir o Endereço do Utilizador (Lógica adicionada)
     if ($endereco_id) {
         $stmtAddr = $pdo->prepare(
             "UPDATE endereco SET cep=?, rua=?, numero=?, complemento=?, bairro=?, cidade=?, estado=? WHERE id=? AND usuario_id=?"
@@ -54,58 +57,37 @@ try {
         $stmtAddr->execute([$cep, $rua, $numero, $complemento, $bairro, $cidade, $estado, $user_id]);
         $endereco_id = $pdo->lastInsertId();
 
-        $stmtUser = $pdo->prepare("UPDATE usuarios SET endereco_id = ? WHERE id = ?");
-        $stmtUser->execute([$endereco_id, $user_id]);
+        // $stmtUser = $pdo->prepare("UPDATE usuarios SET endereco_id = ? WHERE id = ?");
+        // $stmtUser->execute([$endereco_id, $user_id]);
     }
 
     if (!$endereco_id) {
         throw new Exception("O endereço de entrega é obrigatório.");
     }
-
-    // Passo 2: Calcular o total final no servidor
+    
     $total_final = 0;
-    $stmtPreco = $pdo->prepare("SELECT preco FROM produto WHERE id = ?");
     foreach($itens_carrinho as $item) {
-        $stmtPreco->execute([$item['produto_id']]);
-        $produto = $stmtPreco->fetch();
-        if ($produto) {
-            $total_final += $produto['preco'] * $item['quantidade'];
-        }
+        $total_final += $item['preco'] * $item['quantidade'];
     }
-
-    // --- Passo 3: Cria o registo na tabela `pedidos` (nome correto) ---
-    $stmtPedido = $pdo->prepare(
-        "INSERT INTO pedidos (usuario_id, total, data_pedidos, status, endereco_id) 
-         VALUES (?, ?, NOW(), 'pendente', ?)"
-    );
-    $stmtPedido->execute([$user_id, $total_final, $endereco_id]);
-    $pedido_id = $pdo->lastInsertId();
-
-    // --- Passo 4: Move os itens para a tabela `itempedidos` (nome correto) ---
-    $stmtMoverItem = $pdo->prepare(
-        "INSERT INTO itempedidos (pedidos_id, produto_id, quantidade, preco) 
-         SELECT ?, ic.produto_id, ic.quantidade, p.preco 
-         FROM itemcarrinho ic JOIN produto p ON ic.produto_id = p.id
-         WHERE ic.carrinho_id = ?"
-    );
-    $stmtMoverItem->execute([$pedido_id, $carrinho_id]);
+   
+    $_SESSION['pedido_pendente'] = [
+        'usuario_id' => $user_id,
+        'endereco_id' => $endereco_id,
+        'carrinho_id' => $carrinho_id,
+        'total' => $total_final,
+        'itens' => $itens_carrinho
+    ];
     
-    // --- Passo 5: Limpa o carrinho do utilizador ---
-    $stmtLimpar = $pdo->prepare("DELETE FROM itemcarrinho WHERE carrinho_id = ?");
-    $stmtLimpar->execute([$carrinho_id]);
-
-    $pdo->commit();
+    $pdo->commit(); 
     
-    header('Location: meus-pedidos.php?status=sucesso');
+    header('Location: pix.php');
     exit;
 
 } catch (Exception $e) {
     $pdo->rollBack();
-    
-    $_SESSION['feedback_checkout'] = "Ocorreu um erro ao finalizar o seu pedido. Por favor, tente novamente.";
-    // Para depuração:
+    // Para depuração, é útil ver o erro real. Pode mudar a linha abaixo temporariamente.
     // $_SESSION['feedback_checkout'] = "Erro: " . $e->getMessage();
-    
+    $_SESSION['feedback_checkout'] = "Ocorreu um erro ao preparar seu pedido. Por favor, tente novamente.";
     header('Location: checkout.php');
     exit;
 }

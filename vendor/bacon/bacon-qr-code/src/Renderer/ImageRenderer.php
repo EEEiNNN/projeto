@@ -13,10 +13,27 @@ use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 
 final class ImageRenderer implements RendererInterface
 {
+<<<<<<< HEAD
     public function __construct(
         private readonly RendererStyle         $rendererStyle,
         private readonly ImageBackEndInterface $imageBackEnd
     ) {
+=======
+    /**
+     * @var RendererStyle
+     */
+    private $rendererStyle;
+
+    /**
+     * @var ImageBackEndInterface
+     */
+    private $imageBackEnd;
+
+    public function __construct(RendererStyle $rendererStyle, ImageBackEndInterface $imageBackEnd)
+    {
+        $this->rendererStyle = $rendererStyle;
+        $this->imageBackEnd = $imageBackEnd;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     }
 
     /**
@@ -112,12 +129,17 @@ final class ImageRenderer implements RendererInterface
     ) : Path {
         if ($fill->inheritsBothColors()) {
             return $modulePath
+<<<<<<< HEAD
                 ->append(
                     $externalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
                 )
                 ->append(
                     $internalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
                 );
+=======
+                ->append($externalPath->translate($xTranslation, $yTranslation))
+                ->append($internalPath->translate($xTranslation, $yTranslation));
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         }
 
         $this->imageBackEnd->push();
@@ -128,17 +150,25 @@ final class ImageRenderer implements RendererInterface
         }
 
         if ($fill->inheritsExternalColor()) {
+<<<<<<< HEAD
             $modulePath = $modulePath->append(
                 $externalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
             );
+=======
+            $modulePath = $modulePath->append($externalPath->translate($xTranslation, $yTranslation));
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         } else {
             $this->imageBackEnd->drawPathWithColor($externalPath, $fill->getExternalColor());
         }
 
         if ($fill->inheritsInternalColor()) {
+<<<<<<< HEAD
             $modulePath = $modulePath->append(
                 $internalPath->rotate($rotation)->translate($xTranslation, $yTranslation)
             );
+=======
+            $modulePath = $modulePath->append($internalPath->translate($xTranslation, $yTranslation));
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         } else {
             $this->imageBackEnd->drawPathWithColor($internalPath, $fill->getInternalColor());
         }

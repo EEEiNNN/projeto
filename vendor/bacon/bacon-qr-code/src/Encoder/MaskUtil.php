@@ -14,10 +14,17 @@ final class MaskUtil
     /**#@+
      * Penalty weights from section 6.8.2.1
      */
+<<<<<<< HEAD
     public const N1 = 3;
     public const N2 = 3;
     public const N3 = 40;
     public const N4 = 10;
+=======
+    const N1 = 3;
+    const N2 = 3;
+    const N3 = 40;
+    const N4 = 10;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     /**#@-*/
 
     private function __construct()

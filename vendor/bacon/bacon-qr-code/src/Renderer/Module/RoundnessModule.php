@@ -17,7 +17,16 @@ final class RoundnessModule implements ModuleInterface
     public const MEDIUM = .5;
     public const SOFT = .25;
 
+<<<<<<< HEAD
     public function __construct(private float $intensity)
+=======
+    /**
+     * @var float
+     */
+    private $intensity;
+
+    public function __construct(float $intensity)
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     {
         if ($intensity <= 0 || $intensity > 1) {
             throw new InvalidArgumentException('Intensity must between 0 (exclusive) and 1 (inclusive)');

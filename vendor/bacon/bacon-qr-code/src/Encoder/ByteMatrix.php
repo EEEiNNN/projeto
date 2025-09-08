@@ -16,10 +16,33 @@ final class ByteMatrix
      *
      * @var SplFixedArray<SplFixedArray<int>>
      */
+<<<<<<< HEAD
     private SplFixedArray $bytes;
 
     public function __construct(private readonly int $width, private readonly int $height)
     {
+=======
+    private $bytes;
+
+    /**
+     * Width of the matrix.
+     *
+     * @var int
+     */
+    private $width;
+
+    /**
+     * Height of the matrix.
+     *
+     * @var int
+     */
+    private $height;
+
+    public function __construct(int $width, int $height)
+    {
+        $this->height = $height;
+        $this->width = $width;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         $this->bytes = new SplFixedArray($height);
 
         for ($y = 0; $y < $height; ++$y) {

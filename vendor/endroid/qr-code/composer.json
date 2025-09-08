@@ -1,7 +1,11 @@
 {
     "name": "endroid/qr-code",
     "description": "Endroid QR Code",
+<<<<<<< HEAD
     "keywords": ["endroid", "qrcode", "qr", "code", "php"],
+=======
+    "keywords": ["endroid", "qrcode", "qr", "code", "bundle", "php"],
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     "homepage": "https://github.com/endroid/qr-code",
     "type": "library",
     "license": "MIT",
@@ -12,6 +16,7 @@
         }
     ],
     "require": {
+<<<<<<< HEAD
         "php": "^8.2",
         "bacon/bacon-qr-code": "^3.0"
     },
@@ -26,6 +31,24 @@
         "khanamiryan/qrcode-detector-decoder": "Enables you to use the image validator",
         "roave/security-advisories": "Makes sure package versions with known security issues are not installed",
         "setasign/fpdf": "Enables you to use the PDF writer"
+=======
+        "php": "^7.3||^8.0",
+        "bacon/bacon-qr-code": "^2.0",
+        "khanamiryan/qrcode-detector-decoder": "^1.0.5",
+        "myclabs/php-enum": "^1.5",
+        "symfony/options-resolver": "^3.4||^4.4||^5.0",
+        "symfony/property-access": "^3.4||^4.4||^5.0"
+    },
+    "require-dev": {
+        "endroid/quality": "^1.5.2",
+        "setasign/fpdf": "^1.8"
+    },
+    "suggest": {
+        "ext-gd": "Required for generating PNG images",
+        "roave/security-advisories": "Avoids installation of package versions with vulnerabilities",
+        "setasign/fpdf": "Required to use the FPDF writer.",
+        "symfony/security-checker": "Checks your composer.lock for vulnerabilities"
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     },
     "autoload": {
         "psr-4": {
@@ -38,6 +61,7 @@
         }
     },
     "config": {
+<<<<<<< HEAD
         "sort-packages": true,
         "preferred-install": {
             "endroid/*": "source"
@@ -49,6 +73,13 @@
     "extra": {
         "branch-alias": {
             "dev-main": "6.x-dev"
+=======
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.x-dev"
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         }
     }
 }

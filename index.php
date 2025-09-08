@@ -26,7 +26,6 @@ function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
         return $row['url_imagem'];
     }
 
-    // Fallback caso não exista produto/imagem para a categoria
     return "_images/sem-imagem.jpg";
 }
 
@@ -39,10 +38,8 @@ function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ben-David</title>
 
-  <!-- CSS do projeto -->
   <link rel="stylesheet" href="_css/style.css"/>
 
-  <!-- Boxicons -->
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
 
   <link
@@ -55,7 +52,6 @@ function getImagemDaCategoria(string $nomeCategoria, PDO $pdo): string
     <section class="banner">
       <div class="bannertext">
         <h1>NOVA COLEÇÃO</h1>
-        <!-- se desejar, você pode puxar uma imagem de destaque aqui também -->
         <img src="" alt="">
         <a href="produtos.php"><button>Ver mais</button></a>
       </div>

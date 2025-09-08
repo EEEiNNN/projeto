@@ -16,6 +16,7 @@ final class ReedSolomonCodec
 {
     /**
      * Symbol size in bits.
+<<<<<<< HEAD
      */
     private int $symbolSize;
 
@@ -48,27 +49,87 @@ final class ReedSolomonCodec
      * Padding bytes at front of shortened block.
      */
     private int $padding;
+=======
+     *
+     * @var int
+     */
+    private $symbolSize;
+
+    /**
+     * Block size in symbols.
+     *
+     * @var int
+     */
+    private $blockSize;
+
+    /**
+     * First root of RS code generator polynomial, index form.
+     *
+     * @var int
+     */
+    private $firstRoot;
+
+    /**
+     * Primitive element to generate polynomial roots, index form.
+     *
+     * @var int
+     */
+    private $primitive;
+
+    /**
+     * Prim-th root of 1, index form.
+     *
+     * @var int
+     */
+    private $iPrimitive;
+
+    /**
+     * RS code generator polynomial degree (number of roots).
+     *
+     * @var int
+     */
+    private $numRoots;
+
+    /**
+     * Padding bytes at front of shortened block.
+     *
+     * @var int
+     */
+    private $padding;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * Log lookup table.
      *
      * @var SplFixedArray
      */
+<<<<<<< HEAD
     private SplFixedArray $alphaTo;
+=======
+    private $alphaTo;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * Anti-Log lookup table.
      *
      * @var SplFixedArray
      */
+<<<<<<< HEAD
     private SplFixedArray $indexOf;
+=======
+    private $indexOf;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * Generator polynomial.
      *
      * @var SplFixedArray
      */
+<<<<<<< HEAD
     private SplFixedArray $generatorPoly;
+=======
+    private $generatorPoly;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     /**
      * @throws InvalidArgumentException if symbol size ist not between 0 and 8
@@ -208,7 +269,11 @@ final class ReedSolomonCodec
     /**
      * Decodes received data.
      */
+<<<<<<< HEAD
     public function decode(SplFixedArray $data, ?SplFixedArray $erasures = null) : ?int
+=======
+    public function decode(SplFixedArray $data, SplFixedArray $erasures = null) : ?int
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     {
         // This speeds up the initialization a bit.
         $numRootsPlusOne = SplFixedArray::fromArray(array_fill(0, $this->numRoots + 1, 0), false);

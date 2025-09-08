@@ -19,6 +19,7 @@ use XMLWriter;
 final class SvgImageBackEnd implements ImageBackEndInterface
 {
     private const PRECISION = 3;
+<<<<<<< HEAD
     private const SCALE_FORMAT = 'scale(%.' . self::PRECISION . 'F)';
     private const TRANSLATE_FORMAT = 'translate(%.' . self::PRECISION . 'F,%.' . self::PRECISION . 'F)';
 
@@ -29,6 +30,28 @@ final class SvgImageBackEnd implements ImageBackEndInterface
     private ?int $currentStack;
 
     private ?int $gradientCount;
+=======
+
+    /**
+     * @var XMLWriter|null
+     */
+    private $xmlWriter;
+
+    /**
+     * @var int[]|null
+     */
+    private $stack;
+
+    /**
+     * @var int|null
+     */
+    private $currentStack;
+
+    /**
+     * @var int|null
+     */
+    private $gradientCount;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
 
     public function __construct()
     {
@@ -87,7 +110,11 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->startElement('g');
         $this->xmlWriter->writeAttribute(
             'transform',
+<<<<<<< HEAD
             sprintf(self::SCALE_FORMAT, round($size, self::PRECISION))
+=======
+            sprintf('scale(%s)', round($size, self::PRECISION))
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         );
         ++$this->stack[$this->currentStack];
     }
@@ -101,7 +128,11 @@ final class SvgImageBackEnd implements ImageBackEndInterface
         $this->xmlWriter->startElement('g');
         $this->xmlWriter->writeAttribute(
             'transform',
+<<<<<<< HEAD
             sprintf(self::TRANSLATE_FORMAT, round($x, self::PRECISION), round($y, self::PRECISION))
+=======
+            sprintf('translate(%s,%s)', round($x, self::PRECISION), round($y, self::PRECISION))
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         );
         ++$this->stack[$this->currentStack];
     }
@@ -316,11 +347,15 @@ final class SvgImageBackEnd implements ImageBackEndInterface
                 break;
         }
 
+<<<<<<< HEAD
         $toBeHashed = $this->getColorString($startColor) . $this->getColorString($endColor) . $gradient->getType();
         if ($startColor instanceof Alpha) {
             $toBeHashed .= (string) $startColor->getAlpha();
         }
         $id = sprintf('g%d-%s', ++$this->gradientCount, hash('xxh64', $toBeHashed));
+=======
+        $id = sprintf('g%d', ++$this->gradientCount);
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
         $this->xmlWriter->writeAttribute('id', $id);
 
         $this->xmlWriter->startElement('stop');

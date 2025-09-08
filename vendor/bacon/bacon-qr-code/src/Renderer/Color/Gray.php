@@ -8,13 +8,29 @@ use BaconQrCode\Exception;
 final class Gray implements ColorInterface
 {
     /**
+<<<<<<< HEAD
      * @param int $gray the gray value between 0 (black) and 100 (white)
      */
     public function __construct(private readonly int $gray)
+=======
+     * @var int
+     */
+    private $gray;
+
+    /**
+     * @param int $gray the gray value between 0 (black) and 100 (white)
+     */
+    public function __construct(int $gray)
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     {
         if ($gray < 0 || $gray > 100) {
             throw new Exception\InvalidArgumentException('Gray must be between 0 and 100');
         }
+<<<<<<< HEAD
+=======
+
+        $this->gray = (int) $gray;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     }
 
     public function getGray() : int

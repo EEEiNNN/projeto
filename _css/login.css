@@ -13,19 +13,19 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px; /* Adicionado para evitar que o box cole nas bordas em telas pequenas */
+    padding: 20px; 
 }
 
 .box {
-    position: relative; /* Mudado de absolute para relative */
+    position: relative; 
     width: 400px;
-    max-width: 100%; /* Garante que não ultrapasse a tela */
-    min-height: 450px; /* Altura mínima para acomodar os elementos */
-    height: auto; /* Altura automática para se ajustar ao conteúdo */
+    max-width: 100%; 
+    min-height: 450px; 
+    height: auto; 
     border-radius: 8px;
     overflow: hidden;
     border: 4px solid white;
-    padding: 30px 40px; /* Padding interno para o conteúdo */
+    padding: 30px 40px; 
 }
 
 /* A animação de gradiente foi removida pois não estava funcionando
@@ -33,23 +33,20 @@ body {
    com a borda branca já é bastante eficaz. */
 
 .box form {
-    position: relative; /* Mudado de absolute para relative */
+    position: relative;
     z-index: 2;
     display: flex;
     flex-direction: column;
 }
 
-/* Oculta os formulários por padrão */
 .form-container {
     display: none;
 }
 
-/* Exibe apenas o formulário ativo */
 .form-container.active {
     display: block;
 }
 
-/* Estilos para os botões de aba (Entrar/Cadastrar) */
 .tab-buttons {
     text-align: center;
     margin-bottom: 25px;
@@ -66,17 +63,17 @@ body {
     cursor: pointer;
     font-weight: 600;
     transition: color 0.3s ease, border-color 0.3s ease;
-    border-bottom: 2px solid transparent; /* Linha sutil por baixo */
+    border-bottom: 2px solid transparent;
 }
 
 .tab-button.active {
     color: #ffffff;
-    border-bottom-color: #A1CCA5; /* Cor da sua logo */
+    border-bottom-color: #A1CCA5;
 }
 
 .box form .inputBox {
     position: relative;
-    width: 100%; /* Ocupa 100% da largura do formulário */
+    width: 100%; 
     margin-top: 35px;
 }
 
@@ -88,7 +85,7 @@ body {
     outline: none;
     box-shadow: none;
     border: none;
-    color: #ffffff; /* Cor do texto digitado */
+    color: #ffffff; 
     font-size: 1em;
     letter-spacing: 0.05em;
     transition: 0.5s;
@@ -108,7 +105,7 @@ body {
 
 .box form .inputBox input:valid ~ span,
 .box form .inputBox input:focus ~ span {
-    color: #A1CCA5; /* Cor de destaque ao focar */
+    color: #A1CCA5; 
     font-size: 0.75em;
     transform: translateY(-34px);
 }
@@ -129,12 +126,12 @@ body {
 .box form .inputBox input:valid ~ i,
 .box form .inputBox input:focus ~ i {
     height: 44px;
-    background: #A1CCA5; /* Cor de destaque ao focar */
+    background: #A1CCA5;
 }
 
 .box form .links {
     display: flex;
-    justify-content: flex-start; /* Alinhado à esquerda */
+    justify-content: flex-start; 
     margin-top: 15px;
 }
 
@@ -158,9 +155,9 @@ body {
     font-size: 0.9em;
     border-radius: 4px;
     font-weight: 600;
-    width: 120px; /* Um pouco mais de largura */
+    width: 120px;
     margin-top: 20px;
-    color: #251B18; /* Cor do fundo para o texto */
+    color: #251B18;
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -177,7 +174,7 @@ body {
 
 .figura {
     text-align: center;
-    margin-bottom: 20px; /* Espaço abaixo da logo */
+    margin-bottom: 20px;
     position: relative;
     z-index: 10;
 }
@@ -187,10 +184,9 @@ body {
     text-decoration: none;
     color: #A1CCA5;
     cursor: pointer;
-    font-size: 2.5em; /* Aumentado um pouco */
+    font-size: 2.5em; 
 }
 
-/* Estilos para a caixa de feedback (mensagens de erro/sucesso) */
 .feedback-message {
     text-align: center;
     margin-top: 20px;
@@ -198,7 +194,7 @@ body {
     border-radius: 5px;
     font-size: 0.9em;
     font-weight: 500;
-    display: none; /* Começa escondido */
+    display: none; 
     z-index: 10;
     position: relative;
 }

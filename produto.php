@@ -2,20 +2,16 @@
 include 'header.php';
 require_once 'models/Produto.php';
 
-// Recupera o ID da URL
 $id = $_GET['id'] ?? null;
 
-// Se não tiver id, redireciona para página inicial
 if (!$id) {
     header("Location: index.php");
     exit;
 }
 
-// Busca produto pelo Model
 $produtoModel = new Produto($pdo);
 $produto = $produtoModel->findById($id);
 
-// Se não encontrar o produto
 if (!$produto) {
     echo "<div class='container' style='max-width: 1200px;
   margin: 0 auto;

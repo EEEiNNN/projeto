@@ -7,6 +7,7 @@ final class EllipticArc implements OperationInterface
 {
     private const ZERO_TOLERANCE = 1e-05;
 
+<<<<<<< HEAD
     private float $xRadius;
     private float $yRadius;
     private float $xAxisAngle;
@@ -19,10 +20,62 @@ final class EllipticArc implements OperationInterface
         private readonly bool  $sweep,
         private readonly float $x,
         private readonly float $y
+=======
+    /**
+     * @var float
+     */
+    private $xRadius;
+
+    /**
+     * @var float
+     */
+    private $yRadius;
+
+    /**
+     * @var float
+     */
+    private $xAxisAngle;
+
+    /**
+     * @var bool
+     */
+    private $largeArc;
+
+    /**
+     * @var bool
+     */
+    private $sweep;
+
+    /**
+     * @var float
+     */
+    private $x;
+
+    /**
+     * @var float
+     */
+    private $y;
+
+    public function __construct(
+        float $xRadius,
+        float $yRadius,
+        float $xAxisAngle,
+        bool $largeArc,
+        bool $sweep,
+        float $x,
+        float $y
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     ) {
         $this->xRadius = abs($xRadius);
         $this->yRadius = abs($yRadius);
         $this->xAxisAngle = $xAxisAngle % 360;
+<<<<<<< HEAD
+=======
+        $this->largeArc = $largeArc;
+        $this->sweep = $sweep;
+        $this->x = $x;
+        $this->y = $y;
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     }
 
     public function getXRadius() : float
@@ -77,6 +130,7 @@ final class EllipticArc implements OperationInterface
     }
 
     /**
+<<<<<<< HEAD
      * @return self
      */
     public function rotate(int $degrees) : OperationInterface
@@ -98,6 +152,8 @@ final class EllipticArc implements OperationInterface
     }
 
     /**
+=======
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
      * Converts the elliptic arc to multiple curves.
      *
      * Since not all image back ends support elliptic arcs, this method allows to convert the arc into multiple curves
@@ -165,7 +221,11 @@ final class EllipticArc implements OperationInterface
     /**
      * @return float[]
      */
+<<<<<<< HEAD
     private function calculateCenterPointParameters(float $fromX, float $fromY, float $xAngle): array
+=======
+    private function calculateCenterPointParameters(float $fromX, float $fromY, float $xAngle)
+>>>>>>> 9a1505c21ac62ee06081b4c91de8bf496714d3eb
     {
         $rX = $this->xRadius;
         $rY = $this->yRadius;

@@ -1,1 +1,2 @@
 # projeto2
+composer require endroid/qr-code:3.9.7

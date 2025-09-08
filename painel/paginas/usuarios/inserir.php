@@ -27,35 +27,9 @@ try {
     // Inicia uma transação para garantir que tudo seja salvo ou nada seja salvo.
     $pdo->beginTransaction();
 
-    $usuario_id_a_usar = $id;
-
-    // --- LÓGICA DE UTILIZADOR ---
-    if (empty($id)) {
-        // CASO 1: CRIAR NOVO UTILIZADOR
-        // [CORREÇÃO] A query não inclui mais a coluna 'endereco_id'
-        $stmtUser = $pdo->prepare(
-            "INSERT INTO usuarios (nome, email, telefone, nivel, status) VALUES (?, ?, ?, ?, 'pendente')"
-        );
-        $stmtUser->execute([$nome, $email, $telefone, $nivel]);
-
-        // **VERIFICAÇÃO CRÍTICA**: Confirmar que o utilizador foi criado antes de prosseguir.
-        $novo_id = $pdo->lastInsertId();
-        if (empty($novo_id)) {
-            throw new Exception("Falha crítica: Não foi possível criar o novo utilizador na base de dados.");
-        }
-        $usuario_id_a_usar = $novo_id;
-
-    } else {
-        // CASO 2: ATUALIZAR UTILIZADOR EXISTENTE
-        $stmtUser = $pdo->prepare(
-            "UPDATE usuarios SET nome = ?, email = ?, telefone = ?, nivel = ? WHERE id = ?"
-        );
-        $stmtUser->execute([$nome, $email, $telefone, $nivel, $id]);
-    }
-
-    // --- LÓGICA DE ENDEREÇO ---
-    // Só executa se houver dados de endereço e um ID de utilizador válido
-    if ((!empty($cep) || !empty($rua)) && !empty($usuario_id_a_usar)) {
+    // Passo 1: Inserir ou Atualizar o Endereço
+    // Apenas insere/atualiza se algum campo de endereço for preenchido
+    if (!empty($cep) || !empty($rua)) {
         if (empty($endereco_id)) {
             // Inserir novo endereço, associado ao utilizador (novo ou existente)
             $stmtEnd = $pdo->prepare(

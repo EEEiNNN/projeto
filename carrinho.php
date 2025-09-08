@@ -1,11 +1,9 @@
 <?php
-// Inicia a sessão de forma segura no topo do ficheiro
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 require_once 'conexao.php';
 
-// Assumindo que a função isLoggedIn() está definida em conexao.php
 if (!isLoggedIn()) {
     header('Location: login.php');
     exit;
@@ -13,8 +11,6 @@ if (!isLoggedIn()) {
 
 $user_id = $_SESSION['id'];
 
-// --- LÓGICA PARA GARANTIR QUE O CARRINHO EXISTA ---
-// Esta lógica é executada sempre que a página é carregada.
 $stmt = $pdo->prepare("SELECT id FROM carrinho WHERE usuario_id = ?");
 $stmt->execute([$user_id]);
 $carrinho = $stmt->fetch();
@@ -22,14 +18,11 @@ $carrinho = $stmt->fetch();
 if ($carrinho) {
     $carrinho_id = $carrinho['id'];
 } else {
-    // Se o utilizador não tiver um carrinho, cria um novo.
     $stmt = $pdo->prepare("INSERT INTO carrinho (usuario_id, data_criacao) VALUES (?, NOW())");
     $stmt->execute([$user_id]);
     $carrinho_id = $pdo->lastInsertId();
 }
-// ---------------------------------------------------
 
-// Processa as ações do carrinho (AJAX)
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     $response = ['success' => false, 'message' => 'Ocorreu um erro.'];
     
@@ -109,7 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             break;
     }
 
-    // Após qualquer alteração, recalcula os totais e envia de volta
     if ($response['success']) {
         $stmtSoma = $pdo->prepare("
             SELECT SUM(p.preco * ic.quantidade) as total, COUNT(ic.id) as itemCount
@@ -124,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         
         $response['novoTotalCarrinho'] = number_format($total_carrinho, 2, ',', '.');
         $response['freteTexto'] = $total_carrinho >= 199 ? 'Grátis' : 'A calcular';
-        $response['totalFinal'] = number_format($total_carrinho, 2, ',', '.'); // Ajustar se houver frete
+        $response['totalFinal'] = number_format($total_carrinho, 2, ',', '.'); 
         $response['itemCount'] = $resultado['itemCount'] ?? 0;
     }
 
@@ -133,9 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     exit;
 }
 
-// --- LÓGICA PARA EXIBIR A PÁGINA ---
-
-// Busca os itens do carrinho para exibir na página
 $stmtItens = $pdo->prepare("
     SELECT 
         ic.produto_id,
@@ -154,7 +143,6 @@ $stmtItens = $pdo->prepare("
 $stmtItens->execute([$carrinho_id]);
 $itens_carrinho = $stmtItens->fetchAll();
 
-// Calcula o total
 $total = 0;
 foreach ($itens_carrinho as $item) {
     $total += $item['subtotal'];
