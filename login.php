@@ -2,16 +2,71 @@
 require_once("conexao.php");
 
 try {
+    // Verifica se a tabela de usuários está vazia
     $query = $pdo->query("SELECT id FROM usuarios LIMIT 1");
     if ($query->rowCount() == 0) {
-        $senha_hash = password_hash('123', PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare(
+
+        // Inicia uma transação para garantir a consistência dos dados
+        $pdo->beginTransaction();
+
+        // 1. Insere o usuário Administrador
+        $senha_hash_admin = password_hash('123', PASSWORD_DEFAULT);
+        $stmtAdmin = $pdo->prepare(
             "INSERT INTO usuarios (nome, email, senha, nivel, ativo, status) 
              VALUES ('Administrador', 'admin@admin.com', ?, 'admin', 'Sim', 'ativo')"
         );
-        $stmt->execute([$senha_hash]);
+        $stmtAdmin->execute([$senha_hash_admin]);
+
+        // 2. Insere o usuário comum (User)
+        $senha_hash_user = password_hash('123', PASSWORD_DEFAULT);
+        $stmtUser = $pdo->prepare(
+            "INSERT INTO usuarios (nome, email, senha, nivel, ativo, status) 
+             VALUES ('User', 'user@user.com', ?, 'user', 'Sim', 'ativo')"
+        );
+        $stmtUser->execute([$senha_hash_user]);
+        $userId = $pdo->lastInsertId(); // Pega o ID do 'User'
+
+        // 3. Insere o endereço para o 'User'
+        $stmtEndereco = $pdo->prepare(
+            "INSERT INTO endereco (cep, rua, numero, bairro, estado, cidade, usuario_id)
+             VALUES ('70160-900', 'Praça dos Três Poderes', '111', 'Zona Cívico-Administrativa', 'DF', 'Brasília', ?)"
+        );
+        $stmtEndereco->execute([$userId]);
+        $enderecoId = $pdo->lastInsertId(); // Pega o ID do endereço
+
+        // 4. Define os produtos para o pedido de exemplo (baseado no seu .sql)
+        $produto1_preco = 350.00;  // Brincos
+        $produto2_preco = 1000.00; // Anel
+        $total_pedido = $produto1_preco + $produto2_preco;
+
+        // 5. Insere o PEDIDO para o 'User' com o total correto
+        $stmtPedido = $pdo->prepare(
+            "INSERT INTO pedidos (status, total, data_pedidos, usuario_id, endereco_id) 
+             VALUES ('processando', ?, NOW(), ?, ?)"
+        );
+        $stmtPedido->execute([$total_pedido, $userId, $enderecoId]);
+        $pedidoId = $pdo->lastInsertId(); // Pega o ID do pedido
+
+        // 6. **CORREÇÃO**: Insere os ITENS DO PEDIDO na tabela `itempedidos`
+        $stmtItens1 = $pdo->prepare(
+            "INSERT INTO itempedidos (pedidos_id, produto_id, quantidade, preco) VALUES (?, ?, ?, ?)"
+        );
+        // Adiciona o produto com ID 2 (Brincos)
+        $stmtItens1->execute([$pedidoId, 2, 1, $produto1_preco]); 
+
+        $stmtItens2 = $pdo->prepare(
+            "INSERT INTO itempedidos (pedidos_id, produto_id, quantidade, preco) VALUES (?, ?, ?, ?)"
+        );
+        // Adiciona o produto com ID 1 (Anel)
+        $stmtItens2->execute([$pedidoId, 1, 1, $produto2_preco]);
+
+        // Se tudo ocorreu bem, confirma a transação
+        $pdo->commit();
+    
     }
 } catch (PDOException $e) {
+    // Se algum erro ocorreu, desfaz tudo
+    $pdo->rollBack();
     die("Erro ao inicializar a base de dados: " . $e->getMessage());
 }
 ?>

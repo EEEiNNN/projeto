@@ -123,7 +123,7 @@ if($linhas > 0){
 	<div class="main-content">
 		<div class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left" id="cbp-spmenu-s1">
 			<!--left-fixed -navigation-->
-			<aside class="sidebar-left" style="overflow: scroll; height:100%; scrollbar-width: thin;">
+			<aside class="sidebar-left" style="overflow: none; height:100%; scrollbar-width: thin;">
 				<nav class="navbar navbar-inverse">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".collapse" aria-expanded="false">
@@ -132,11 +132,10 @@ if($linhas > 0){
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<h1><a class="navbar-brand" href="index.php"><span class="fa fa-globe"></span> Sistema<span class="dashboard_text">Nome do Sistema</span></a></h1>
+						<h1><a class="navbar-brand" href="index.php"><span class="fa fa-globe"></span> Sistema<span class="dashboard_text" style="font-family: 'Animoto', sans-serif;">Ben-David</span></a></h1>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="sidebar-menu">
-							<li class="header">MENU NAVEGAÇÃO</li>
 							<li class="treeview">
 								<a href="index.php">
 									<i class="fa fa-dashboard"></i> <span>Home</span>
@@ -149,7 +148,7 @@ if($linhas > 0){
 									<i class="fa fa-angle-left pull-right"></i>
 								</a>
 								<ul class="treeview-menu">
-									<li><a href="index.php?pagina=usuarios"><i class="fa fa-angle-right"></i> Usuários</a></li>
+									<li><a href="index.php?pagina=usuarios"><i class="fa fa-angle-right" style="color: #A1CCA5"></i> <span style="color: #A1CCA5">Usuários</span></a></li>
 									
 								</ul>
 								<li class="treeview">
@@ -159,7 +158,7 @@ if($linhas > 0){
 									<i class="fa fa-angle-left pull-right"></i>
 								</a>
 								<ul class="treeview-menu">
-									<li><a href="index.php?pagina=produtos_admin"><i class="fa fa-angle-right"></i> Produtos</a></li>
+									<li><a href="index.php?pagina=produtos_admin" style="color: #A1CCA5"><i class="fa fa-angle-right"></i> <span style="color: #A1CCA5">Produtos</span></a></li>
 									
 								</ul>
 								<li class="treeview">
@@ -169,7 +168,7 @@ if($linhas > 0){
 									<i class="fa fa-angle-left pull-right"></i>
 								</a>
 								<ul class="treeview-menu">
-									<li><a href="index.php?pagina=pedidos"><i class="fa fa-angle-right"></i> Pedidos</a></li>
+									<li><a href="index.php?pagina=pedidos" style="color: #A1CCA5"><i class="fa fa-angle-right"></i> <span style="color: #A1CCA5">Pedidos</span></a></li>
 									
 								</ul>
 					</div>
@@ -180,27 +179,7 @@ if($linhas > 0){
 		<!--left-fixed -navigation-->
 		
 		<!-- header-starts -->
-		<div class="sticky-header header-section ">
-			<div class="header-left">
-				<!--toggle button start-->
-				<button id="showLeftPush" data-toggle="collapse" data-target=".collapse"><i class="fa fa-bars"></i></button>
-				<!--toggle button end-->
-				<div class="profile_details_left"><!--notifications of menu start -->
-					<ul class="nofitications-dropdown">
-						<li class="dropdown head-dpdn">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-envelope"></i></a>
-							<ul class="dropdown-menu">
-								
-							</ul>
-						</li>
-						
-
-
-					</ul>
-					<div class="clearfix"> </div>
-				</div>
-				
-			</div>
+		
 			<div class="header-right">
 
 				<div class="profile_details">		

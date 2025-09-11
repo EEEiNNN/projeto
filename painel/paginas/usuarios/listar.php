@@ -70,7 +70,7 @@ if ($linhas > 0) {
                     <td class="esc">{$telefone}</td>
                     <td class="esc">{$nivel}</td>
                     <td>
-                        <big><a href="#" onclick="editar('{$id}', '{$nome}', '{$email}', '{$telefone}', '{$nivel}', '{$cep}', '{$rua}', '{$numero}', '{$complemento}', '{$bairro}', '{$cidade}', '{$estado}', '{$endereco_id}')" title="Editar Dados"><i class="fa fa-edit text-primary"></i></a></big>
+                        <big><a href="#" onclick="editar('{$id}', '{$nome}', '{$email}', '{$telefone}', '{$nivel}', '{$cep}', '{$rua}', '{$numero}', '{$complemento}', '{$bairro}', '{$cidade}', '{$estado}', '{$endereco_id}')" title="Editar Dados"><i class="fa fa-edit text-primary" style="color: #A1CCA5;"></i></a></big>
 
                         <li class="dropdown head-dpdn2" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><big><i class="fa fa-trash-o text-danger"></i></big></a>

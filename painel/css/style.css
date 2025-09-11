@@ -4,16 +4,17 @@ Author URL: http://w3layouts.com
 License: Creative Commons Attribution 3.0 Unported
 License URL: http://creativecommons.org/licenses/by/3.0/
 */
+@import url('https://fonts.cdnfonts.com/css/futura-std-4');
 h4, h5, h6,
 h1, h2, h3 {margin: 0;}
 ul, ol {margin: 0;}
 p {margin: 0;}
 
 html, body{
-	font-family: 'PT Sans', sans-serif;
+	font-family: "Futura Std", sans-serif;
     font-size: 100%;
   	overflow-x: hidden;
-	background: #fff;
+	background: #fdf9f9;
 }
 body a{
 	transition: 0.5s all ease;
@@ -56,7 +57,7 @@ span.dashboard_text {
 
 
 .navbar-inverse .navbar-brand {
-    color: #b8c7ce;
+    color: #A1CCA5;
 }
 /*-------HEADER SECTION------*/
 .navbar-inverse {
@@ -2960,12 +2961,12 @@ hr {
     padding-right: 7px;
 }
 .panel-title h3,.hover-buttons h2{
-    color: #222d32;
+    color: #251B18;
     font-size: 1.4em;
     margin: 0 0 .5em 0;
 }
 h3.w3_inner_tittle.two {
-    color: #222d32;
+    color: #251B18;
     font-size: 1.4em;
     margin: 0 0 1em 0;
 }
@@ -2974,7 +2975,7 @@ h3.w3_inner_tittle.two {
 }
 .w3l-table-info h2,.agile-tables h3 {
     font-size: 28px;
-    color: #222d32;
+    color: #251B18;
 }
 .mb10 {
     margin-bottom: 10px !important;

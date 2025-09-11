@@ -67,7 +67,7 @@ if($linhas > 0){
                 <td class="esc">{$categoria_nome_esc}</td>
                 <td class="esc">{$estoque}</td>
                 <td>
-                    <big><a href="#" onclick="editarProduto('{$id}', '{$nome_esc}', '{$preco}', '{$categoria_id}', '{$descricao_esc}', '{$imagem_esc}', '{$estoque}')" title="Editar Dados"><i class="fa fa-edit text-primary"></i></a></big>
+                    <big><a href="#" onclick="editarProduto('{$id}', '{$nome_esc}', '{$preco}', '{$categoria_id}', '{$descricao_esc}', '{$imagem_esc}', '{$estoque}')" title="Editar Dados"><i class="fa fa-edit text-primary" style="color: #A1CCA5;"></i></a></big>
 
                     <li class="dropdown head-dpdn2" style="display: inline-block">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">

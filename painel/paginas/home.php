@@ -1,365 +1,176 @@
+<?php
+// --- Início do Bloco PHP para buscar dados do Banco ---
+
+// Contagem total de usuários
+$query_usuarios = $pdo->query("SELECT COUNT(id) as total FROM usuarios");
+$res_usuarios = $query_usuarios->fetch(PDO::FETCH_ASSOC);
+$total_usuarios = $res_usuarios['total'];
+
+// Contagem total de pedidos
+$query_pedidos = $pdo->query("SELECT COUNT(id) as total FROM pedidos");
+$res_pedidos = $query_pedidos->fetch(PDO::FETCH_ASSOC);
+$total_pedidos = $res_pedidos['total'];
+
+// Faturamento total (soma dos pedidos com status 'entregue' ou 'processando')
+$query_faturamento = $pdo->query("SELECT SUM(total) as total FROM pedidos WHERE status IN ('entregue', 'processando')");
+$res_faturamento = $query_faturamento->fetch(PDO::FETCH_ASSOC);
+$faturamento_total = $res_faturamento['total'] ?? 0; // Se for nulo, assume 0
+
+// Contagem total de produtos
+$query_produtos = $pdo->query("SELECT COUNT(id) as total FROM produto");
+$res_produtos = $query_produtos->fetch(PDO::FETCH_ASSOC);
+$total_produtos = $res_produtos['total'];
+
+// Pedidos recentes para a tabela
+$query_recentes = $pdo->query("
+    SELECT p.id, p.total, p.status, u.nome as nome_cliente 
+    FROM pedidos p 
+    JOIN usuarios u ON p.usuario_id = u.id 
+    ORDER BY p.data_pedidos DESC 
+    LIMIT 5
+");
+$pedidos_recentes = $query_recentes->fetchAll(PDO::FETCH_ASSOC);
+
+// Dados para o gráfico de vendas dos últimos 7 dias
+$query_vendas_semana = $pdo->query("
+    SELECT 
+        DATE(data_pedidos) as dia, 
+        SUM(total) as total_dia 
+    FROM pedidos 
+    WHERE data_pedidos >= CURDATE() - INTERVAL 7 DAY 
+    GROUP BY DATE(data_pedidos) 
+    ORDER BY dia ASC
+");
+$vendas_semana = $query_vendas_semana->fetchAll(PDO::FETCH_ASSOC);
+
+// Formata os dados para o JavaScript do gráfico
+$grafico_data = [];
+$dias_semana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+// Inicializa os últimos 7 dias com valor 0
+for ($i = 6; $i >= 0; $i--) {
+    $data = date('Y-m-d', strtotime("-$i days"));
+    $dia_semana_nome = $dias_semana[date('w', strtotime($data))];
+    $grafico_data[$dia_semana_nome] = ['X' => $dia_semana_nome, 'Y' => 0];
+}
+
+foreach ($vendas_semana as $venda) {
+    $dia_semana_nome = $dias_semana[date('w', strtotime($venda['dia']))];
+    $grafico_data[$dia_semana_nome]['Y'] = (float)$venda['total_dia'];
+}
+
+$vendas_semana_json = json_encode(array_values($grafico_data));
+
+// --- Fim do Bloco PHP ---
+?>
+
 <div class="main-page">
-	<div class="col_3">
-		<div class="col-md-3 widget widget1">
-			<div class="r3_counter_box">
-				<i class="pull-left fa fa-dollar icon-rounded"></i>
-				<div class="stats">
-					<h5><strong>$452</strong></h5>
-					<span>Total Revenue</span>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-3 widget widget1">
-			<div class="r3_counter_box">
-				<i class="pull-left fa fa-laptop user1 icon-rounded"></i>
-				<div class="stats">
-					<h5><strong>$1019</strong></h5>
-					<span>Online Revenue</span>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-3 widget widget1">
-			<div class="r3_counter_box">
-				<i class="pull-left fa fa-money user2 icon-rounded"></i>
-				<div class="stats">
-					<h5><strong>$1012</strong></h5>
-					<span>Expenses</span>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-3 widget widget1">
-			<div class="r3_counter_box">
-				<i class="pull-left fa fa-pie-chart dollar1 icon-rounded"></i>
-				<div class="stats">
-					<h5><strong>$450</strong></h5>
-					<span>Expenditure</span>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-3 widget">
-			<div class="r3_counter_box">
-				<i class="pull-left fa fa-users dollar2 icon-rounded"></i>
-				<div class="stats">
-					<h5><strong>1450</strong></h5>
-					<span>Total Users</span>
-				</div>
-			</div>
-		</div>
-		<div class="clearfix"> </div>
-	</div>
-	
-	<div class="row-one widgettable">
-		<div class="col-md-8 content-top-2 card">
-			<div class="agileinfo-cdr">
-				<div class="card-header">
-					<h3>Weekly Sales</h3>
-				</div>
-				
-				<div id="Linegraph" style="width: 98%; height: 350px">
-				</div>
-				
-			</div>
-		</div>
-		<div class="col-md-4 stat">
-			<div class="content-top-1">
-				<div class="col-md-6 top-content">
-					<h5>Sales</h5>
-					<label>1283+</label>
-				</div>
-				<div class="col-md-6 top-content1">	   
-					<div id="demo-pie-1" class="pie-title-center" data-percent="45"> <span class="pie-value"></span> </div>
-				</div>
-				<div class="clearfix"> </div>
-			</div>
-			<div class="content-top-1">
-				<div class="col-md-6 top-content">
-					<h5>Reviews</h5>
-					<label>2262+</label>
-				</div>
-				<div class="col-md-6 top-content1">	   
-					<div id="demo-pie-2" class="pie-title-center" data-percent="75"> <span class="pie-value"></span> </div>
-				</div>
-				<div class="clearfix"> </div>
-			</div>
-			<div class="content-top-1">
-				<div class="col-md-6 top-content">
-					<h5>Visitors</h5>
-					<label>12589+</label>
-				</div>
-				<div class="col-md-6 top-content1">	   
-					<div id="demo-pie-3" class="pie-title-center" data-percent="90"> <span class="pie-value"></span> </div>
-				</div>
-				<div class="clearfix"> </div>
-			</div>
-		</div>
-		
-
-
-		<div class="clearfix"> </div>
-	</div>
-	
-	
-	
-
-	
+    <div class="col_3">
+        <div class="col-md-3 widget widget1">
+            <div class="r3_counter_box" style="background-color: #251B18;">
+                <i class="pull-left fa fa-dollar icon-rounded" style="background-color: #A1CCA5;"></i>
+                <div class="stats">
+                    <h5 style="color: #A1CCA5;"><strong>R$ <?php echo number_format($faturamento_total, 2, ',', '.'); ?></strong></h5>
+                    <span style="color: #709775;">Faturamento Total</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 widget widget1">
+            <div class="r3_counter_box"style="background-color: #251B18;">
+                <i class="pull-left fa fa-shopping-cart user1 icon-rounded" style="background-color: #A1CCA5;"></i>
+                <div class="stats">
+                    <h5 style="color: #A1CCA5;"><strong><?php echo $total_pedidos; ?></strong></h5>
+                    <span style="color: #709775;">Total de Pedidos</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 widget widget1">
+            <div class="r3_counter_box" style="background-color: #251B18;">
+                <i class="pull-left fa fa-users user2 icon-rounded" style="background-color: #A1CCA5;"></i>
+                <div class="stats">
+                    <h5 style="color: #A1CCA5;"><strong><?php echo $total_usuarios; ?></strong></h5>
+                    <span style="color: #709775;">Total de Clientes</span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 widget">
+            <div class="r3_counter_box" style="background-color: #251B18;">
+                <i class="pull-left fa fa-archive dollar2 icon-rounded" style="background-color: #A1CCA5;"></i>
+                <div class="stats">
+                    <h5 style="color: #A1CCA5;"><strong><?php echo $total_produtos; ?></strong></h5>
+                    <span style="color: #709775;">Produtos Cadastrados</span>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
+    
+    <div class="row-one widgettable">
+        <div class="col-md-8 content-top-2 card" style="background-color: #251B18;">
+            <div class="agileinfo-cdr">
+                <div class="card-header">
+                    <h3 style="color: #A1CCA5;">Vendas da Semana</h3>
+                </div>
+                <div id="Linegraph" style="width: 98%; height: 350px"></div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 stat" >
+             <div class="card" >
+                <div class="card-header">
+                    <h3>Pedidos Recentes</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>#ID</th>
+                                <th>Cliente</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($pedidos_recentes as $pedido): ?>
+                                <tr>
+                                    <td><?php echo str_pad($pedido['id'], 4, '0', STR_PAD_LEFT); ?></td>
+                                    <td><?php echo htmlspecialchars($pedido['nome_cliente']); ?></td>
+                                    <td><span class="label label-info"><?php echo ucfirst($pedido['status']); ?></span></td>
+                                    <td>R$ <?php echo number_format($pedido['total'], 2, ',', '.'); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"> </div>
+    </div>
 </div>
 
-
-
-
-<!-- for index page weekly sales java script -->
 <script src="js/SimpleChart.js"></script>
 <script>
-	var graphdata1 = {
-		linecolor: "#CCA300",
-		title: "Monday",
-		values: [
-		{ X: "6:00", Y: 10.00 },
-		{ X: "7:00", Y: 20.00 },
-		{ X: "8:00", Y: 40.00 },
-		{ X: "9:00", Y: 34.00 },
-		{ X: "10:00", Y: 40.25 },
-		{ X: "11:00", Y: 28.56 },
-		{ X: "12:00", Y: 18.57 },
-		{ X: "13:00", Y: 34.00 },
-		{ X: "14:00", Y: 40.89 },
-		{ X: "15:00", Y: 12.57 },
-		{ X: "16:00", Y: 28.24 },
-		{ X: "17:00", Y: 18.00 },
-		{ X: "18:00", Y: 34.24 },
-		{ X: "19:00", Y: 40.58 },
-		{ X: "20:00", Y: 12.54 },
-		{ X: "21:00", Y: 28.00 },
-		{ X: "22:00", Y: 18.00 },
-		{ X: "23:00", Y: 34.89 },
-		{ X: "0:00", Y: 40.26 },
-		{ X: "1:00", Y: 28.89 },
-		{ X: "2:00", Y: 18.87 },
-		{ X: "3:00", Y: 34.00 },
-		{ X: "4:00", Y: 40.00 }
-		]
-	};
-	var graphdata2 = {
-		linecolor: "#00CC66",
-		title: "Tuesday",
-		values: [
-		{ X: "6:00", Y: 100.00 },
-		{ X: "7:00", Y: 120.00 },
-		{ X: "8:00", Y: 140.00 },
-		{ X: "9:00", Y: 134.00 },
-		{ X: "10:00", Y: 140.25 },
-		{ X: "11:00", Y: 128.56 },
-		{ X: "12:00", Y: 118.57 },
-		{ X: "13:00", Y: 134.00 },
-		{ X: "14:00", Y: 140.89 },
-		{ X: "15:00", Y: 112.57 },
-		{ X: "16:00", Y: 128.24 },
-		{ X: "17:00", Y: 118.00 },
-		{ X: "18:00", Y: 134.24 },
-		{ X: "19:00", Y: 140.58 },
-		{ X: "20:00", Y: 112.54 },
-		{ X: "21:00", Y: 128.00 },
-		{ X: "22:00", Y: 118.00 },
-		{ X: "23:00", Y: 134.89 },
-		{ X: "0:00", Y: 140.26 },
-		{ X: "1:00", Y: 128.89 },
-		{ X: "2:00", Y: 118.87 },
-		{ X: "3:00", Y: 134.00 },
-		{ X: "4:00", Y: 180.00 }
-		]
-	};
-	var graphdata3 = {
-		linecolor: "#FF99CC",
-		title: "Wednesday",
-		values: [
-		{ X: "6:00", Y: 230.00 },
-		{ X: "7:00", Y: 210.00 },
-		{ X: "8:00", Y: 214.00 },
-		{ X: "9:00", Y: 234.00 },
-		{ X: "10:00", Y: 247.25 },
-		{ X: "11:00", Y: 218.56 },
-		{ X: "12:00", Y: 268.57 },
-		{ X: "13:00", Y: 274.00 },
-		{ X: "14:00", Y: 280.89 },
-		{ X: "15:00", Y: 242.57 },
-		{ X: "16:00", Y: 298.24 },
-		{ X: "17:00", Y: 208.00 },
-		{ X: "18:00", Y: 214.24 },
-		{ X: "19:00", Y: 214.58 },
-		{ X: "20:00", Y: 211.54 },
-		{ X: "21:00", Y: 248.00 },
-		{ X: "22:00", Y: 258.00 },
-		{ X: "23:00", Y: 234.89 },
-		{ X: "0:00", Y: 210.26 },
-		{ X: "1:00", Y: 248.89 },
-		{ X: "2:00", Y: 238.87 },
-		{ X: "3:00", Y: 264.00 },
-		{ X: "4:00", Y: 270.00 }
-		]
-	};
-	var graphdata4 = {
-		linecolor: "Random",
-		title: "Thursday",
-		values: [
-		{ X: "6:00", Y: 300.00 },
-		{ X: "7:00", Y: 410.98 },
-		{ X: "8:00", Y: 310.00 },
-		{ X: "9:00", Y: 314.00 },
-		{ X: "10:00", Y: 310.25 },
-		{ X: "11:00", Y: 318.56 },
-		{ X: "12:00", Y: 318.57 },
-		{ X: "13:00", Y: 314.00 },
-		{ X: "14:00", Y: 310.89 },
-		{ X: "15:00", Y: 512.57 },
-		{ X: "16:00", Y: 318.24 },
-		{ X: "17:00", Y: 318.00 },
-		{ X: "18:00", Y: 314.24 },
-		{ X: "19:00", Y: 310.58 },
-		{ X: "20:00", Y: 312.54 },
-		{ X: "21:00", Y: 318.00 },
-		{ X: "22:00", Y: 318.00 },
-		{ X: "23:00", Y: 314.89 },
-		{ X: "0:00", Y: 310.26 },
-		{ X: "1:00", Y: 318.89 },
-		{ X: "2:00", Y: 518.87 },
-		{ X: "3:00", Y: 314.00 },
-		{ X: "4:00", Y: 310.00 }
-		]
-	};
-	var Piedata = {
-		linecolor: "Random",
-		title: "Profit",
-		values: [
-		{ X: "Monday", Y: 50.00 },
-		{ X: "Tuesday", Y: 110.98 },
-		{ X: "Wednesday", Y: 70.00 },
-		{ X: "Thursday", Y: 204.00 },
-		{ X: "Friday", Y: 80.25 },
-		{ X: "Saturday", Y: 38.56 },
-		{ X: "Sunday", Y: 98.57 }
-		]
-	};
-	$(function () {
-		$("#Bargraph").SimpleChart({
-			ChartType: "Bar",
-			toolwidth: "50",
-			toolheight: "25",
-			axiscolor: "#E6E6E6",
-			textcolor: "#6E6E6E",
-			showlegends: true,
-			data: [graphdata4, graphdata3, graphdata2, graphdata1],
-			legendsize: "140",
-			legendposition: 'bottom',
-			xaxislabel: 'Hours',
-			title: 'Weekly Profit',
-			yaxislabel: 'Profit in $'
-		});
-		$("#sltchartype").on('change', function () {
-			$("#Bargraph").SimpleChart('ChartType', $(this).val());
-			$("#Bargraph").SimpleChart('reload', 'true');
-		});
-		$("#Hybridgraph").SimpleChart({
-			ChartType: "Hybrid",
-			toolwidth: "50",
-			toolheight: "25",
-			axiscolor: "#E6E6E6",
-			textcolor: "#6E6E6E",
-			showlegends: true,
-			data: [graphdata4],
-			legendsize: "140",
-			legendposition: 'bottom',
-			xaxislabel: 'Hours',
-			title: 'Weekly Profit',
-			yaxislabel: 'Profit in $'
-		});
-		$("#Linegraph").SimpleChart({
-			ChartType: "Line",
-			toolwidth: "50",
-			toolheight: "25",
-			axiscolor: "#E6E6E6",
-			textcolor: "#6E6E6E",
-			showlegends: false,
-			data: [graphdata4, graphdata3, graphdata2, graphdata1],
-			legendsize: "140",
-			legendposition: 'bottom',
-			xaxislabel: 'Hours',
-			title: 'Weekly Profit',
-			yaxislabel: 'Profit in $'
-		});
-		$("#Areagraph").SimpleChart({
-			ChartType: "Area",
-			toolwidth: "50",
-			toolheight: "25",
-			axiscolor: "#E6E6E6",
-			textcolor: "#6E6E6E",
-			showlegends: true,
-			data: [graphdata4, graphdata3, graphdata2, graphdata1],
-			legendsize: "140",
-			legendposition: 'bottom',
-			xaxislabel: 'Hours',
-			title: 'Weekly Profit',
-			yaxislabel: 'Profit in $'
-		});
-		$("#Scatterredgraph").SimpleChart({
-			ChartType: "Scattered",
-			toolwidth: "50",
-			toolheight: "25",
-			axiscolor: "#E6E6E6",
-			textcolor: "#6E6E6E",
-			showlegends: true,
-			data: [graphdata4, graphdata3, graphdata2, graphdata1],
-			legendsize: "140",
-			legendposition: 'bottom',
-			xaxislabel: 'Hours',
-			title: 'Weekly Profit',
-			yaxislabel: 'Profit in $'
-		});
-		$("#Piegraph").SimpleChart({
-			ChartType: "Pie",
-			toolwidth: "50",
-			toolheight: "25",
-			axiscolor: "#E6E6E6",
-			textcolor: "#6E6E6E",
-			showlegends: true,
-			showpielables: true,
-			data: [Piedata],
-			legendsize: "250",
-			legendposition: 'right',
-			xaxislabel: 'Hours',
-			title: 'Weekly Profit',
-			yaxislabel: 'Profit in $'
-		});
+	
+    // Pega os dados de vendas da semana gerados pelo PHP
+    var vendasSemanaData = {
+        linecolor: "#709775",
+        title: "Vendas",
+        values: <?php echo $vendas_semana_json; ?>
+    };
 
-		$("#Stackedbargraph").SimpleChart({
-			ChartType: "Stacked",
-			toolwidth: "50",
-			toolheight: "25",
-			axiscolor: "#E6E6E6",
-			textcolor: "#6E6E6E",
-			showlegends: true,
-			data: [graphdata3, graphdata2, graphdata1],
-			legendsize: "140",
-			legendposition: 'bottom',
-			xaxislabel: 'Hours',
-			title: 'Weekly Profit',
-			yaxislabel: 'Profit in $'
-		});
-
-		$("#StackedHybridbargraph").SimpleChart({
-			ChartType: "StackedHybrid",
-			toolwidth: "50",
-			toolheight: "25",
-			axiscolor: "#E6E6E6",
-			textcolor: "#6E6E6E",
-			showlegends: true,
-			data: [graphdata3, graphdata2, graphdata1],
-			legendsize: "140",
-			legendposition: 'bottom',
-			xaxislabel: 'Hours',
-			title: 'Weekly Profit',
-			yaxislabel: 'Profit in $'
-		});
-	});
-
+    $(function () {
+        // Inicializa o gráfico de linha com os dados dinâmicos
+        $("#Linegraph").SimpleChart({
+            ChartType: "Line",
+            toolwidth: "50",
+            toolheight: "25",
+            axiscolor: "#FDF9F9",
+            textcolor: "#A1CCA5",
+            showlegends: false,
+            data: [vendasSemanaData],
+            xaxislabel: 'Dias da Semana',
+            title: 'Resumo de Vendas',
+            yaxislabel: 'Valor (R$)'
+        });
+    });
 </script>
-<!-- //for index page weekly sales java script -->

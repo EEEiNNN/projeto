@@ -5,6 +5,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nome = $_POST["usuario"];
     $email = $_POST["email"];
     $password = $_POST["senha"];
+    
   
     $senha_hash = password_hash($password, PASSWORD_DEFAULT);
 

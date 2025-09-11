@@ -27,7 +27,7 @@ if ($linhas > 0) {
         <td>{$status}</td>
         <td>{$data}</td>
         <td>
-            <big><a href="#" onclick="editar('{$id}')" title="Editar Pedido"><i class="fa fa-edit text-primary"></i></a></big>
+            <big><a href="#" onclick="editar('{$id}')" title="Editar Pedido"><i class="fa fa-edit text-primary" style="color: #A1CCA5;"></i></a></big>
             <big><a href="#" onclick="excluir('{$id}')" title="Excluir Pedido"><i class="fa fa-trash-o text-danger"></i></a></big>
         </td>
         </tr>

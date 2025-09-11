@@ -1,7 +1,7 @@
 <?php
     $pag = 'usuarios';
 ?>
-<a type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalForm">
+<a type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalForm" style="background-color: #251B18; color: #A1CCA5;">
     <span class="fa fa-plus"></span> Novo Utilizador
 </a>
 
@@ -89,7 +89,7 @@
 					<small><div id="mensagem" align="center"></div></small>
 				</div>
 				<div class="modal-footer">       
-					<button type="submit" class="btn btn-primary">Salvar</button>
+					<button type="submit" class="btn btn-primary" style="background-color: #251B18; color: #A1CCA5;">Salvar</button>
 				</div>
 			</form>
 		</div>
