@@ -78,6 +78,7 @@ try {
     <title>Acesso ao Sistema</title>
     <link rel="stylesheet" href="_css/login.css">
     <link rel="shortcut icon" type="image/x-icon" href="_img/icone.svg">
+    <link rel="icon" type="image/png" href="_images/logo.jpeg">
     <style>
         .form-container { display: none; }
         .form-container.active { display: block; }
